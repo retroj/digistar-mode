@@ -42,6 +42,8 @@
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")
 
+  ;; Whitespace
+  (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'require-final-newline) t))
 
 (provide 'digistar-mode)
