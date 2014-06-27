@@ -25,7 +25,8 @@
 ;;; Code:
 
 (defvar digistar--font-lock-keywords
-  `("^# {\\[[0-9.]+]}"))
+  `(;; digistar version cookie
+    "^# {\\[[0-9.]+]}"))
 
 (define-derived-mode digistar-mode prog-mode
   "Digistar"
