@@ -3,8 +3,8 @@
 ;; Copyright (C) 2014  John Foerch <jjfoerch@earthlink.net>
 
 ;; Author: John Foerch <jjfoerch@earthlink.net>
-;; Version: 0.1
-;; Date: 2014-06-27
+;; Version: 0.2
+;; Date: 2014-06-28
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or
