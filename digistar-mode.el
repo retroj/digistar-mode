@@ -1,4 +1,4 @@
-;;; digistar-mode.el --- major mode for Digistar script format
+;;; digistar-mode.el --- major mode for Digistar scripts
 
 ;; Copyright (C) 2014  John Foerch <jjfoerch@earthlink.net>
 
@@ -23,13 +23,13 @@
 ;;; Commentary:
 
 ;; This package provides digistar-mode, a major mode for editing Digistar
-;; script format.
+;; scripts.
 
 ;;; Code:
 
 (defvar digistar-indent 8)
 
-(defvar digistar--font-lock-keywords
+(defvar digistar-font-lock-keywords
   `(;; digistar version cookie
     "^# {\\[[0-9.]+]}"))
 
@@ -75,7 +75,7 @@
 
   ;; Syntax Highlighting
   (set (make-local-variable 'font-lock-defaults)
-       (list digistar--font-lock-keywords))
+       (list digistar-font-lock-keywords))
   (set (make-local-variable 'show-trailing-whitespace) t)
 
   ;; Comments
