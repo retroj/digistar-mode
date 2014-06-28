@@ -63,8 +63,11 @@
       (delete-region (point-at-bol) (point))
       (insert (make-string digistar-indent 32))))))
 
+(defalias 'digistar-parent-mode
+  (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
+
 ;;;###autoload
-(define-derived-mode digistar-mode prog-mode
+(define-derived-mode digistar-mode digistar-parent-mode
   "Digistar"
   "A major mode for Digistar scripts.
 \\{digistar-mode-map}"
