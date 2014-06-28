@@ -77,8 +77,7 @@
        'digistar-indent-line-function)
 
   ;; Syntax Highlighting
-  (set (make-local-variable 'font-lock-defaults)
-       (list digistar-font-lock-keywords))
+  (setq font-lock-defaults (list digistar-font-lock-keywords))
   (set (make-local-variable 'show-trailing-whitespace) t)
 
   ;; Comments
