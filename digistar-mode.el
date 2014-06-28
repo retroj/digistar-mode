@@ -4,7 +4,7 @@
 
 ;; Author: John Foerch <jjfoerch@earthlink.net>
 ;; Version: 0.1
-;; Date: 2014-06-26
+;; Date: 2014-06-27
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or
@@ -22,16 +22,56 @@
 
 ;;; Commentary:
 
+;; This package provides digistar-mode, a major mode for editing Digistar
+;; script format.
+
 ;;; Code:
+
+(defvar digistar-indent 8)
 
 (defvar digistar--font-lock-keywords
   `(;; digistar version cookie
     "^# {\\[[0-9.]+]}"))
 
+(defun digistar-indent-line-function ()
+  (let (timestamp
+        command)
+    (save-excursion
+      (beginning-of-line)
+      (when (looking-at
+             "[[:blank:]]*\\(\\+?[0-9.]+\\)?[[:blank:]]*\\(.+\\)?$")
+        (setq timestamp (match-string 1))
+        (setq command (match-string 2))))
+    (cond
+     ((and timestamp command)
+      (indent-line-to 0)
+      (save-excursion
+        (re-search-forward "\\s-")
+        (re-search-forward "\\sw")
+        (backward-char)
+        (if (< (current-column) digistar-indent)
+            (indent-to digistar-indent)
+          (delete-region (+ (point-at-bol) digistar-indent)
+                         (point)))))
+     (timestamp
+      (indent-line-to 0))
+     (command
+      (indent-line-to digistar-indent))
+     ((= (current-column) digistar-indent)
+      (delete-region (point-at-bol) (point)))
+     (t
+      (delete-region (point-at-bol) (point))
+      (insert (make-string digistar-indent 32))))))
+
+;;;###autoload
 (define-derived-mode digistar-mode prog-mode
   "Digistar"
   "A major mode for Digistar scripts.
 \\{digistar-mode-map}"
+
+  ;; Indentation
+  (set (make-local-variable 'indent-line-function)
+       'digistar-indent-line-function)
 
   ;; Syntax Highlighting
   (set (make-local-variable 'font-lock-defaults)
