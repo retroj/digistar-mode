@@ -27,13 +27,17 @@
 
 ;;; Code:
 
-(defvar digistar-indent 8)
+(defvar digistar-indent 8
+  "Indentation column for commands in a Digistar script.")
 
 (defvar digistar-font-lock-keywords
   `(;; digistar version cookie
     "^# {\\[[0-9.]+]}"))
 
 (defun digistar-indent-line-function ()
+  "An indent-line-function for Digistar scripts.  Indents
+timestamps to column 0 and commands to the value of
+`digistar-indent'."
   (let (timestamp
         command)
     (save-excursion
