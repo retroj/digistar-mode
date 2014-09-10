@@ -79,6 +79,7 @@ timestamps to column 0 and commands to the value of
 (define-derived-mode digistar-mode digistar-parent-mode
   "Digistar"
   "A major mode for Digistar scripts.
+
 \\{digistar-mode-map}"
 
   ;; Indentation
