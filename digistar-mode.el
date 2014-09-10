@@ -98,5 +98,10 @@ timestamps to column 0 and commands to the value of
   (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'require-final-newline) t))
 
+
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.ds\\'" . digistar-mode))
+
+
 (provide 'digistar-mode)
 ;;; digistar-mode.el ends here
