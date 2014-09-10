@@ -53,10 +53,9 @@ timestamps to column 0 and commands to the value of
         (re-search-forward "\\s-")
         (re-search-forward "\\sw")
         (backward-char)
-        (if (< (current-column) digistar-indent)
-            (indent-to digistar-indent)
-          (delete-region (+ (point-at-bol) digistar-indent)
-                         (point)))))
+        (unless (< (current-column) digistar-indent)
+          (delete-horizontal-space))
+        (indent-to digistar-indent)))
      (timestamp
       (indent-line-to 0))
      (command
