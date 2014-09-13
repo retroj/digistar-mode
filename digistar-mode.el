@@ -44,33 +44,71 @@
   "An indent-line-function for Digistar scripts.  Indents
 timestamps to column 0 and commands to the value of
 `digistar-indent'."
-  (let (timestamp
-        command)
+  (let ((col (current-column))
+        (eol (point-at-eol))
+        bol
+        line-is-blank
+        line-is-comment
+        comment-start
+        comment-column
+        timestamp-start
+        timestamp-end
+        command-start)
     (save-excursion
       (beginning-of-line)
-      (when (looking-at
-             "[[:blank:]]*\\(\\+?[0-9.]+\\)?[[:blank:]]*\\(.+\\)?$")
-        (setq timestamp (match-string 1))
-        (setq command (match-string 2))))
+      (setq bol (point))
+      (cond
+       ((looking-at "[[:blank:]]*$")
+        (setq line-is-blank t))
+       ((looking-at "[[:blank:]]*\\(#\\)")
+        (setq line-is-comment t)
+        (setq comment-start (match-beginning 1))
+        (goto-char comment-start)
+        (setq comment-column (current-column)))
+       ((looking-at "[[:blank:]]*\\(\\+?[0-9.]+\\)?[[:blank:]]*\\(.+\\)?$")
+        (setq timestamp-start (match-beginning 1)
+              timestamp-end (match-end 1)
+              command-start (match-beginning 2)))))
     (cond
-     ((and timestamp command)
-      (indent-line-to 0)
-      (save-excursion
-        (re-search-forward "\\s-")
-        (re-search-forward "\\sw")
-        (backward-char)
-        (when (> (current-column) digistar-indent)
-          (delete-horizontal-space))
-        (indent-to digistar-indent)))
-     (timestamp
-      (indent-line-to 0))
-     (command
-      (indent-line-to digistar-indent))
-     ((= (current-column) digistar-indent)
-      (delete-region (point-at-bol) (point)))
-     (t
-      (delete-region (point-at-bol) (point))
-      (insert (make-string digistar-indent 32))))))
+     (line-is-blank
+      (if (= digistar-indent col)
+          (delete-region bol eol)
+        (delete-region bol eol)
+        (insert (make-string digistar-indent 32))))
+     (line-is-comment
+      (delete-region bol comment-start)
+      (unless (= digistar-indent comment-column)
+        (save-excursion
+          (goto-char bol)
+          (insert (make-string digistar-indent 32)))))
+     ((and timestamp-start command-start)
+      (delete-region timestamp-end command-start)
+      (if (= (point) timestamp-end)
+          (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32))
+        (save-excursion
+          (goto-char timestamp-end)
+          (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32))))
+      (delete-region bol timestamp-start))
+     (timestamp-start
+      (cond
+       ((> timestamp-start bol)
+        (let ((indent (>= (point) timestamp-end)))
+          (delete-region bol timestamp-start)
+          (when indent
+            (insert (make-string (- digistar-indent (- (point) bol)) 32)))))
+       ((= digistar-indent col)
+        (delete-region timestamp-end eol))
+       ((and (= bol timestamp-start)
+             (>= col (- timestamp-end bol)))
+        (delete-region timestamp-end eol)
+        (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32)))))
+     (command-start
+      (delete-region bol command-start)
+      (if (= (point) bol)
+          (insert (make-string digistar-indent 32))
+        (save-excursion
+          (goto-char bol)
+          (insert (make-string digistar-indent 32))))))))
 
 (defalias 'digistar-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
