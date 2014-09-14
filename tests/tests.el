@@ -55,6 +55,9 @@
 (ert-deftest digistar-test-indent-comment-04 ()
   (should (string= "        |# foo" (digistar-test-indentation-case "|# foo"))))
 
+(ert-deftest digistar-test-indent-comment-05 ()
+  (should (string= "        |# foo" (digistar-test-indentation-case " | # foo"))))
+
 (ert-deftest digistar-test-indent-timestamp-01 ()
   (should (string= "|0" (digistar-test-indentation-case "|0"))))
 
