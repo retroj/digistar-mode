@@ -78,9 +78,11 @@ timestamps to column 0 and commands to the value of
      (line-is-comment
       (delete-region bol comment-start)
       (unless (= digistar-indent comment-column)
-        (save-excursion
-          (goto-char bol)
-          (insert (make-string digistar-indent 32)))))
+        (if (= (point) bol)
+            (insert (make-string digistar-indent 32))
+          (save-excursion
+            (goto-char bol)
+            (insert (make-string digistar-indent 32))))))
      ((and timestamp-start command-start)
       (delete-region timestamp-end command-start)
       (if (= (point) timestamp-end)
