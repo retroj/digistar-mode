@@ -65,7 +65,7 @@ timestamps to column 0 and commands to the value of
         (setq comment-start (match-beginning 1))
         (goto-char comment-start)
         (setq comment-column (current-column)))
-       ((looking-at "[[:blank:]]*\\(\\+?[0-9.]+\\)?[[:blank:]]*\\(.+\\)?$")
+       ((looking-at "[[:blank:]]*\\(\\+?[0-9:.]+\\)?[[:blank:]]*\\(.+\\)?$")
         (setq timestamp-start (match-beginning 1)
               timestamp-end (match-end 1)
               command-start (match-beginning 2)))))

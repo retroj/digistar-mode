@@ -91,6 +91,9 @@
 (ert-deftest digistar-test-indent-timestamp-11 ()
   (should (string= "10      |" (digistar-test-indentation-case " 10 |"))))
 
+(ert-deftest digistar-test-indent-timestamp-12 ()
+  (should (string= "+1:00   |" (digistar-test-indentation-case "+1:00|"))))
+
 (ert-deftest digistar-test-indent-command-01 ()
   (should (string= "        |foo" (digistar-test-indentation-case "|foo"))))
 
