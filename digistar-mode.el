@@ -38,7 +38,11 @@
 
 (defvar digistar-font-lock-keywords
   `(;; digistar version cookie
-    "^# {\\[[0-9.]+]}"))
+    "^# {\\[[0-9.]+]}"
+
+    ;; timestamps
+    ("^[[:blank:]]*\\(\\+?[0-9:.]+\\)"
+     (1 font-lock-preprocessor-face))))
 
 (defun digistar-indent-line-function ()
   "An indent-line-function for Digistar scripts.  Indents
