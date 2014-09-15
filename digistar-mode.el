@@ -36,13 +36,19 @@
 (defvar digistar-indent 8
   "Indentation column for commands in a Digistar script.")
 
-(defvar digistar-font-lock-keywords
-  `(;; digistar version cookie
-    "^# {\\[[0-9.]+]}"
+(defvar digistar-syntax-table
+  (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?# "<" table)  ;; comment syntax
+    (modify-syntax-entry ?\n ">" table)
+    table)
+  "The syntax table for font-lock in digistar-mode.")
 
-    ;; timestamps
+(defvar digistar-font-lock-keywords
+  `(;; timestamps
     ("^[[:blank:]]*\\(\\+?[0-9:.]+\\)"
-     (1 font-lock-preprocessor-face))))
+     (1 font-lock-preprocessor-face)))
+  "A font-lock-keywords table for digistar-mode.  See
+`font-lock-defaults'.")
 
 (defun digistar-indent-line-function ()
   "An indent-line-function for Digistar scripts.  Indents
@@ -125,6 +131,7 @@ timestamps to column 0 and commands to the value of
   "A major mode for Digistar scripts.
 
 \\{digistar-mode-map}"
+  :syntax-table digistar-syntax-table
 
   ;; Indentation
   (set (make-local-variable 'indent-line-function)
