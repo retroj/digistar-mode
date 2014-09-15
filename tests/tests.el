@@ -132,3 +132,38 @@
 
 (ert-deftest digistar-test-indent-timestamp-command-09 ()
   (should (string= "10      |foo" (digistar-test-indentation-case " 10|  foo"))))
+
+(ert-deftest digistar-timestamp-to-seconds-test-01 ()
+  (should (= 0 (digistar-timestamp-to-seconds "0"))))
+
+(ert-deftest digistar-timestamp-to-seconds-test-02 ()
+  (should (= 1 (digistar-timestamp-to-seconds "1"))))
+
+(ert-deftest digistar-timestamp-to-seconds-test-03 ()
+  (should (= 1.5 (digistar-timestamp-to-seconds "1.5"))))
+
+(ert-deftest digistar-timestamp-to-seconds-test-04 ()
+  (should (= 61.5 (digistar-timestamp-to-seconds "1:01.5"))))
+
+(ert-deftest digistar-timestamp-to-seconds-test-05 ()
+  (should (= 3601.5 (digistar-timestamp-to-seconds "1:00:01.5"))))
+
+(defun digistar-test-absolute-time (setup)
+  (let ((setup (split-string setup "|")))
+    (with-temp-buffer
+      (insert (cadr setup))
+      (goto-char (point-min))
+      (insert (car setup))
+      (digistar-absolute-time-at-point))))
+
+(ert-deftest digistar-absolute-time-at-point-test-01 ()
+  (should (= 3.0 (digistar-test-absolute-time "3.0|"))))
+
+(ert-deftest digistar-absolute-time-at-point-test-02 ()
+  (should (= 3.0 (digistar-test-absolute-time "3.0\n|"))))
+
+(ert-deftest digistar-absolute-time-at-point-test-03 ()
+  (should (= 6.0 (digistar-test-absolute-time "3.0\n+3.0|"))))
+
+(ert-deftest digistar-absolute-time-at-point-test-04 ()
+  (should (= 3.0 (digistar-test-absolute-time "\n+3.0|"))))

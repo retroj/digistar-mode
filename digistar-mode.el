@@ -36,6 +36,49 @@
 (defvar digistar-indent 8
   "Indentation column for commands in a Digistar script.")
 
+(defun digistar-timestamp-to-seconds (ts)
+  (if (string-match (concat "\\`\\(?:\\([[:digit:]]+\\):\\)??"
+                            "\\(?:\\([[:digit:]]+\\):\\)?"
+                            "\\([[:digit:]]+\\(?:\\.[[:digit:]]+\\)?\\)\\'")
+                    ts)
+      (let ((h (string-to-number (or (match-string 1 ts) "0")))
+            (m (string-to-number (or (match-string 2 ts) "0")))
+            (s (string-to-number (match-string 3 ts))))
+        (+ (* 3600 h) (* 60 m) s))
+    (error "Not a valid timestamp")))
+
+(defun digistar-absolute-time-at-point-1 ()
+  "This procedure is for internal use by
+`digistar-absolute-time-at-point'.  It assumes that the caller
+has just used a regexp operation to find a timestamp.  If it is a
+relative timestamp, this procedure returns its value in seconds.
+If it is an absolute timestamp, it throws 'return with the value
+in seconds."
+  (let ((relativep (match-string 1))
+        (s (digistar-timestamp-to-seconds (match-string 2))))
+    (if relativep
+        s
+      (throw 'return s))))
+
+(defun digistar-absolute-time-at-point ()
+  (save-excursion
+    (save-restriction
+      (beginning-of-line)
+      (let ((timestamp-regexp "^[[:blank:]]*\\(\\+\\)?\\([0-9:.]+\\)")
+            (time 0))
+        (let ((abstime
+               (catch 'return
+                 (when (looking-at timestamp-regexp)
+                   (setq time (digistar-absolute-time-at-point-1)))
+                 (while (re-search-backward timestamp-regexp nil t)
+                   (setq time (+ time (digistar-absolute-time-at-point-1))))
+                 0.0)))
+          (+ abstime time))))))
+
+(defun digistar-show-absolute-time ()
+  (interactive)
+  (message "%s" (digistar-absolute-time-at-point)))
+
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?# "<" table)  ;; comment syntax
