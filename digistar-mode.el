@@ -79,6 +79,12 @@ in seconds."
   (interactive)
   (message "%s" (digistar-absolute-time-at-point)))
 
+(defvar digistar-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
+    map)
+  "The keymap for digistar-mode.")
+
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?# "<" table)  ;; comment syntax
