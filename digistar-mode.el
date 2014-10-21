@@ -36,6 +36,19 @@
 (defvar digistar-indent 8
   "Indentation column for commands in a Digistar script.")
 
+(defun digistar-seconds-to-timestamp (s)
+  (let* ((str (number-to-string s))
+         (sd (if (string-match "\\(\\.[[:digit:]]+\\)$" str)
+                 (match-string 1 str)
+               ""))
+         (h (floor s 3600))
+         (s (- s (* h 3600)))
+         (m (floor s 60))
+         (s (- s (* m 60))))
+    (if (> h 0)
+        (format "%d:%02d:%02d%s" h m (truncate s) sd)
+      (format "%d:%02d%s" m (truncate s) sd))))
+
 (defun digistar-timestamp-to-seconds (ts)
   (if (string-match (concat "\\`\\(?:\\([[:digit:]]+\\):\\)??"
                             "\\(?:\\([[:digit:]]+\\):\\)?"
@@ -77,7 +90,10 @@ in seconds."
 
 (defun digistar-show-absolute-time ()
   (interactive)
-  (message "%s" (digistar-absolute-time-at-point)))
+  (let ((s (digistar-absolute-time-at-point)))
+    (if (>= s 60)
+        (message "%s (%s)" s (digistar-seconds-to-timestamp s))
+      (message "%s" s))))
 
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
