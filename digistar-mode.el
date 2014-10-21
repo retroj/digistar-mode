@@ -95,8 +95,26 @@ in seconds."
         (message "%s (%s)" s (digistar-seconds-to-timestamp s))
       (message "%s" s))))
 
+(defun digistar-show-lis-file ()
+  "Show the .lis file that corresponds to the current Digistar
+script file, if it exists."
+  (interactive)
+  (let* ((f (or (buffer-file-name) (error "Not visiting a file")))
+         (sans-ds-ext (if (string-equal "ds" (file-name-extension f))
+                          (file-name-sans-extension f)
+                        f))
+         (lisfile (concat sans-ds-ext ".lis")))
+    (unless (file-exists-p lisfile)
+      (error "LIS file does not exist (%s)" lisfile))
+    (let ((buf (find-file-noselect lisfile)))
+      (with-current-buffer buf
+        (unless (eq major-mode 'digistar-mode)
+          (digistar-mode)))
+      (pop-to-buffer buf))))
+
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
     map)
   "The keymap for digistar-mode.")
