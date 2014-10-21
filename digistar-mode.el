@@ -129,7 +129,10 @@ script file, if it exists."
 (defvar digistar-font-lock-keywords
   `(;; timestamps
     ("^[[:blank:]]*\\(\\+?[0-9:.]+\\)"
-     (1 font-lock-preprocessor-face)))
+     (1 font-lock-preprocessor-face))
+
+    ;; errors in .lis files
+    ("^!.*$" . font-lock-warning-face))
   "A font-lock-keywords table for digistar-mode.  See
 `font-lock-defaults'.")
 
