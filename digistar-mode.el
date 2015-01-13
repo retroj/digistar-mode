@@ -225,7 +225,6 @@ timestamps to column 0 and commands to the value of
 
   ;; Syntax Highlighting
   (setq font-lock-defaults (list digistar-font-lock-keywords nil t))
-  (set (make-local-variable 'show-trailing-whitespace) t)
 
   ;; Comments
   (set (make-local-variable 'comment-start) "# ")
