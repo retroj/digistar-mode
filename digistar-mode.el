@@ -73,9 +73,11 @@ in seconds."
         s
       (throw 'return s))))
 
-(defun digistar-absolute-time-at-point ()
+(defun digistar-absolute-time-at-point (&optional pt)
   (save-excursion
     (save-restriction
+      (when pt
+        (goto-char pt))
       (beginning-of-line)
       (let ((timestamp-regexp "^[[:blank:]]*\\(\\+\\)?\\([0-9:.]+\\)")
             (time 0))
@@ -89,8 +91,15 @@ in seconds."
           (+ abstime time))))))
 
 (defun digistar-show-absolute-time ()
+  "Show absolute time (in-script) of the current line.  If mark
+is active, the duration between point and mark will be reported
+instead."
   (interactive)
-  (let ((s (digistar-absolute-time-at-point)))
+  (let* ((s1 (digistar-absolute-time-at-point))
+         (s2 (if mark-active
+                 (digistar-absolute-time-at-point (mark))
+               0))
+         (s (abs (- s2 s1))))
     (if (>= s 60)
         (message "%s (%s)" s (digistar-seconds-to-timestamp s))
       (message "%s" s))))
