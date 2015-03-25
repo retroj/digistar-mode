@@ -33,7 +33,7 @@
 
 ;;; Code:
 
-(defvar digistar-indent 8
+(defvar digistar-indent 7
   "Indentation column for commands in a Digistar script.")
 
 (defun digistar-seconds-to-timestamp (s)
