@@ -36,18 +36,34 @@
 (defvar digistar-indent 7
   "Indentation column for commands in a Digistar script.")
 
+(defun digistar-format-decimal-number (n)
+  (let ((str (replace-regexp-in-string "\\.?0*$" "" (format "%.11f" n))))
+    (cond
+     ((string-match "^\\([0-9]\\)\\.\\([0-9]*?\\)\\(\\(?:0000+\\|9999+\\)[0-9]*\\)$" str)
+      (let* ((n1 (match-string 1 str))
+             (n2 (match-string 2 str))
+             (n3 (match-string 3 str))
+             (s (number-to-string (round (string-to-number (concat n1 n2 "." n3))))))
+        (if (string= "" n2)
+            s
+          (concat n1 "." s))))
+     ((string-match "^\\(.*?\\)0*$" str)
+      (match-string 1 str)))))
+
 (defun digistar-seconds-to-timestamp (s)
-  (let* ((str (number-to-string s))
-         (sd (if (string-match "\\(\\.[[:digit:]]+\\)$" str)
-                 (match-string 1 str)
-               ""))
+  (let* ((sd (digistar-format-decimal-number (- s (truncate s))))
+         (sd (substring (if (string= sd "") "0" sd) 1))
          (h (floor s 3600))
          (s (- s (* h 3600)))
          (m (floor s 60))
-         (s (- s (* m 60))))
-    (if (> h 0)
-        (format "%d:%02d:%02d%s" h m (truncate s) sd)
-      (format "%d:%02d%s" m (truncate s) sd))))
+         (s (truncate (- s (* m 60)))))
+    (cond
+     ((> h 0)
+      (format "%d:%02d:%02d%s" h m s sd))
+     ((> m 0)
+      (format "%d:%02d%s" m s sd))
+     (t
+      (format "%d%s" s sd)))))
 
 (defun digistar-timestamp-to-seconds (ts)
   (if (string-match (concat "\\`\\(?:\\([[:digit:]]+\\):\\)??"
@@ -73,36 +89,45 @@ in seconds."
         s
       (throw 'return s))))
 
+(defvar digistar-timestamp-regexp "^[[:blank:]]*\\(\\+\\)?\\([0-9:.]+\\)")
+
 (defun digistar-absolute-time-at-point (&optional pt)
   (save-excursion
     (save-restriction
       (when pt
         (goto-char pt))
       (beginning-of-line)
-      (let ((timestamp-regexp "^[[:blank:]]*\\(\\+\\)?\\([0-9:.]+\\)")
-            (time 0))
+      (let ((time 0))
         (let ((abstime
                (catch 'return
-                 (when (looking-at timestamp-regexp)
+                 (when (looking-at digistar-timestamp-regexp)
                    (setq time (digistar-absolute-time-at-point-1)))
-                 (while (re-search-backward timestamp-regexp nil t)
+                 (while (re-search-backward digistar-timestamp-regexp nil t)
                    (setq time (+ time (digistar-absolute-time-at-point-1))))
                  0.0)))
           (+ abstime time))))))
 
-(defun digistar-show-absolute-time ()
+(defun digistar-show-absolute-time (&optional insert)
   "Show absolute time (in-script) of the current line.  If mark
 is active, the duration between point and mark will be reported
-instead."
-  (interactive)
+instead.  With prefix argument, inserts the result."
+  (interactive "P")
   (let* ((s1 (digistar-absolute-time-at-point))
          (s2 (if mark-active
                  (digistar-absolute-time-at-point (mark))
                0))
          (s (abs (- s2 s1))))
-    (if (>= s 60)
-        (message "%s (%s)" s (digistar-seconds-to-timestamp s))
-      (message "%s" s))))
+    (cond
+     ((consp insert)
+      (save-excursion
+        (save-restriction
+          (beginning-of-line)
+          (when (looking-at digistar-timestamp-regexp)
+            (delete-region (point) (match-end 0)))
+          (insert (digistar-seconds-to-timestamp s)))))
+     ((>= s 60)
+      (message "%s (%s)" s (digistar-seconds-to-timestamp s)))
+     (t (message "%s" s)))))
 
 (defun digistar-show-lis-file ()
   "Show the .lis file that corresponds to the current Digistar
