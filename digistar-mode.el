@@ -35,6 +35,9 @@
 
 (defvar digistar-indent 7
   "Indentation column for commands in a Digistar script.")
+;;
+;; Utils
+;;
 
 (defun digistar-format-decimal-number (n)
   (let ((str (replace-regexp-in-string "\\.?0*$" "" (format "%.11f" n))))
@@ -107,6 +110,11 @@ in seconds."
                  0.0)))
           (+ abstime time))))))
 
+
+;;
+;; Commands
+;;
+
 (defun digistar-show-absolute-time (&optional insert)
   "Show absolute time (in-script) of the current line.  If mark
 is active, the duration between point and mark will be reported
@@ -146,10 +154,82 @@ script file, if it exists."
           (digistar-mode)))
       (pop-to-buffer buf))))
 
+
+;;
+;; Digistar-Time-Record mode
+;;
+
+(defvar digistar-time-record-timer nil)
+(make-variable-buffer-local 'digistar-time-record-timer)
+
+(defvar digistar-time-record-last-time nil)
+(make-variable-buffer-local 'digistar-time-record-last-time)
+
+(defun digistar-time-record-init-or-insert (&optional relative)
+  (interactive)
+  (cond
+   ((null digistar-time-record-last-time)
+    ;; we must be on a line with a timestamp
+    (let ((realtime (time-to-seconds))
+          (scripttime (digistar-absolute-time-at-point)))
+      (setq digistar-time-record-last-time
+            (list realtime scripttime))
+      (message "Recording times relative to %s. C-c C-c to end." scripttime)))
+   (t
+    (let* ((realtime (time-to-seconds))
+           (relreal (car digistar-time-record-last-time))
+           (relscript (cadr digistar-time-record-last-time))
+           (delta (- realtime relreal))
+           (scripttime (+ relscript delta)))
+      (setq digistar-time-record-last-time
+            (list realtime scripttime))
+      (end-of-line)
+      (open-line 1)
+      (forward-line)
+      (if relative
+          (insert "+" (digistar-seconds-to-timestamp delta))
+          (insert (digistar-seconds-to-timestamp scripttime)))))))
+
+(defun digistar-time-record-init-or-insert-relative ()
+  (interactive)
+  (digistar-time-record-init-or-insert t))
+
+(defun digistar-time-record-mode-done ()
+  (interactive)
+  (digistar-time-record-mode -1)
+  (message "Digistar-Time-Record mode disabled"))
+
+(defvar digistar-time-record-mode-map (make-sparse-keymap))
+(define-key digistar-time-record-mode-map (kbd "SPC") 'digistar-time-record-init-or-insert)
+(define-key digistar-time-record-mode-map (kbd "S-SPC") 'digistar-time-record-init-or-insert-relative)
+(define-key digistar-time-record-mode-map (kbd "C-c C-c") 'digistar-time-record-mode-done)
+
+(define-minor-mode digistar-time-record-mode
+  "Digistar-Time-Record mode is a minor mode that records
+timestamps into a Digistar script in realtime when you press SPC
+or S-SPC.  Once enabled, the first press of SPC initializes the
+relative clock to `digistar-absolute-time-at-point`.  Subsequent
+presses of SPC or S-SPC insert new timestamps into the script
+based on that initialization time.  SPC inserts an absolute
+timestamp and S-SPC inserts a relative timestamp."
+
+ nil " Time-Record" digistar-time-record-mode-map
+  (cond
+    (digistar-time-record-mode
+     (message "digistar-time-record-mode: C-c C-c to finish"))
+    (t
+     (setq digistar-time-record-last-time nil))))
+
+
+;;
+;; Digistar mode
+;;
+
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
+    (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
     map)
   "The keymap for digistar-mode.")
 
