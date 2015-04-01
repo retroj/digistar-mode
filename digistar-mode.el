@@ -257,9 +257,9 @@ timestamps to column 0 and commands with a tab."
       (setq bol (point))
       (cond
        ((looking-at "[[:blank:]]*\\([0-9:.+]+\\)?[[:blank:]]*\\(.+\\)?$")
-        (setq timestamp-start (match-beginning 1))
-        (setq timestamp-end (match-end 1))
-        (setq command-start (match-beginning 2)))))
+        (setq timestamp-start (match-beginning 1)
+              timestamp-end (match-end 1)
+              command-start (match-beginning 2)))))
     (cond
      (timestamp-start
       (unless (= bol timestamp-start)
