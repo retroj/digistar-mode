@@ -168,7 +168,8 @@ script file, if it exists."
           (scripttime (digistar-absolute-time-at-point)))
       (setq digistar-time-record-last-time
             (list realtime scripttime))
-      (message "Recording times relative to %s. C-c C-c to end." scripttime)))
+      (message "Recording times relative to %s. C-c C-c to end."
+               (digistar-seconds-to-timestamp scripttime))))
    (t
     (let* ((realtime (float-time))
            (relreal (car digistar-time-record-last-time))
