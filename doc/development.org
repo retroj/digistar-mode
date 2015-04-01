@@ -1,0 +1,99 @@
+
+* TODO show absolute timecodes in margin
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-10 Wed]
+  :END:
+* TODO 'plugin' for digistar to provide a repl for digistar-mode
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-10 Wed]
+  :END:
+
+It would be easiest to implement this in python.
+* DONE when tabbing a comment, keep point relative to text
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "DONE"  [2014-09-14 Sun]
+  :END:
+
+When tabbing a line like this (ignore blockquote indentation and escape
+character):
+
+    \# this is a comment
+
+If point is in column zero, make sure it moves to digistar-indent along
+with the comment.
+
+* DONE indentation handle colons in timestamps
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "DONE"  [2014-09-14 Sun]
+  :END:
+* CANCELLED indentation handle end-of-line whitespace
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "CANCELLED"  [2014-09-14 Sun] \\
+    see [[cancellation note]]
+  :END:
+
+If point is after the last printing character on the line, and there is
+whitespace at the end of the line, the indent function should delete it.
+If point is elsewhere on the line, leave the whitespace.
+
+** cancellation note
+
+I haven't found another major-mode that behaves this way, and there is a
+case where leaving the end-of-line whitespace intact is useful - when you
+indent while in the process of typing a line of code, and a space happens
+to be the last thing you typed when you called indent.
+
+* DONE indentation don't alter buffer if it doesn't have to
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "DONE"  [2015-04-01 Wed]
+  :END:
+* DONE on comment-line, if cursor is before the comment char, move cursor to it
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "DONE"  [2014-09-14 Sun]
+  :END:
+* CANCELLED if timestamp is wider than digistar-indent, do something smart
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-14 Sun]
+  - State -> "CANCELLED"  [2015-04-01 Wed]
+  :END:
+* DONE command/key-binding to open the .lis file
+  :LOGBOOK:
+  - State -> "TODO"  [2014-09-15 Mon]
+  - State -> "DONE"  [2014-10-21 Tue]
+  :END:
+* DONE highlighting: semicolon comments
+  :LOGBOOK:
+  - State -> "TODO"  [2014-12-05 Fri]
+  - State -> "DONE"  [2015-04-01 Wed]
+  :END:
+* DONE use tabs - i give up
+  :LOGBOOK:  
+  - State -> "TODO"  [2015-03-30 Mon]
+  - State -> "DONE"  [2015-04-01 Wed]
+  :END:      
+* DONE time-record command
+  :LOGBOOK:  
+  - State -> "TODO"  [2015-03-30 Mon]
+  - State -> "DONE"  [2015-04-01 Wed]
+  :END:      
+
+Time-record would be a command to help figure out timings.  You put point
+on a line with a timestamp that you want to start at, and call this
+command.  Time-record then waits for you to press a given key, at which
+point it starts a clock synced to the moment that you pressed that first
+key.  For each subsequent press of that key, a new timestamp is created
+relative to the timestamp that you started on. 
+* TODO highlighting: pathnames
+  :LOGBOOK:  
+  - State -> "TODO"  [2015-04-01 Wed]
+  :END:      
+
+pathnames begin with $ or . and contain at least one slash or backslash.
+
+maybe they can also start with a slash, in the case of a network path -
+have to check that out.
