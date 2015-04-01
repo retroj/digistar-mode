@@ -236,6 +236,7 @@ timestamp and S-SPC inserts a relative timestamp."
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?# "<" table)  ;; comment syntax
+    (modify-syntax-entry ?\; "<" table)
     (modify-syntax-entry ?\n ">" table)
     table)
   "The syntax table for font-lock in digistar-mode.")
