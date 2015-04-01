@@ -279,6 +279,7 @@ timestamps to column 0 and commands with a tab."
   :syntax-table digistar-syntax-table
 
   ;; Indentation
+  (set (make-local-variable 'tab-always-indent) nil)
   (set (make-local-variable 'indent-line-function)
        'digistar-indent-line-function)
   (set (make-local-variable 'electric-indent-chars)
