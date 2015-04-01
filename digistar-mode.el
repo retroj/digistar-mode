@@ -33,8 +33,6 @@
 
 ;;; Code:
 
-(defvar digistar-indent 7
-  "Indentation column for commands in a Digistar script.")
 ;;
 ;; Utils
 ;;
@@ -253,15 +251,8 @@ timestamp and S-SPC inserts a relative timestamp."
 
 (defun digistar-indent-line-function ()
   "An indent-line-function for Digistar scripts.  Indents
-timestamps to column 0 and commands to the value of
-`digistar-indent'."
-  (let ((col (current-column))
-        (eol (point-at-eol))
-        bol
-        line-is-blank
-        line-is-comment
-        comment-start
-        comment-column
+timestamps to column 0 and commands with a tab."
+  (let (bol
         timestamp-start
         timestamp-end
         command-start)
@@ -269,59 +260,16 @@ timestamps to column 0 and commands to the value of
       (beginning-of-line)
       (setq bol (point))
       (cond
-       ((looking-at "[[:blank:]]*$")
-        (setq line-is-blank t))
-       ((looking-at "[[:blank:]]*\\(#\\)")
-        (setq line-is-comment t)
-        (setq comment-start (match-beginning 1))
-        (goto-char comment-start)
-        (setq comment-column (current-column)))
-       ((looking-at "[[:blank:]]*\\(\\+?[0-9:.]+\\)?[[:blank:]]*\\(.+\\)?$")
-        (setq timestamp-start (match-beginning 1)
-              timestamp-end (match-end 1)
-              command-start (match-beginning 2)))))
+       ((looking-at "[[:blank:]]*\\([0-9:.+]+\\)?[[:blank:]]*\\(.+\\)?$")
+        (setq timestamp-start (match-beginning 1))
+        (setq timestamp-end (match-end 1))
+        (setq command-start (match-beginning 2)))))
     (cond
-     (line-is-blank
-      (if (= digistar-indent col)
-          (delete-region bol eol)
-        (delete-region bol eol)
-        (insert (make-string digistar-indent 32))))
-     (line-is-comment
-      (delete-region bol comment-start)
-      (unless (= digistar-indent comment-column)
-        (if (= (point) bol)
-            (insert (make-string digistar-indent 32))
-          (save-excursion
-            (goto-char bol)
-            (insert (make-string digistar-indent 32))))))
-     ((and timestamp-start command-start)
-      (delete-region timestamp-end command-start)
-      (if (= (point) timestamp-end)
-          (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32))
-        (save-excursion
-          (goto-char timestamp-end)
-          (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32))))
-      (delete-region bol timestamp-start))
      (timestamp-start
-      (cond
-       ((> timestamp-start bol)
-        (let ((indent (>= (point) timestamp-end)))
-          (delete-region bol timestamp-start)
-          (when indent
-            (insert (make-string (- digistar-indent (- (point) bol)) 32)))))
-       ((= digistar-indent col)
-        (delete-region timestamp-end eol))
-       ((and (= bol timestamp-start)
-             (>= col (- timestamp-end bol)))
-        (delete-region timestamp-end eol)
-        (insert (make-string (- digistar-indent (- timestamp-end timestamp-start)) 32)))))
-     (command-start
-      (delete-region bol command-start)
-      (if (= (point) bol)
-          (insert (make-string digistar-indent 32))
-        (save-excursion
-          (goto-char bol)
-          (insert (make-string digistar-indent 32))))))))
+      (unless (= bol timestamp-start)
+        (delete-region bol timestamp-start)))
+     (t
+      (indent-line-to tab-width)))))
 
 (defalias 'digistar-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
@@ -337,6 +285,8 @@ timestamps to column 0 and commands to the value of
   ;; Indentation
   (set (make-local-variable 'indent-line-function)
        'digistar-indent-line-function)
+  (set (make-local-variable 'electric-indent-chars)
+       '(?\n ?+ ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?0))
 
   ;; Syntax Highlighting
   (setq font-lock-defaults (list digistar-font-lock-keywords nil t))
@@ -346,7 +296,7 @@ timestamps to column 0 and commands to the value of
   (set (make-local-variable 'comment-end) "")
 
   ;; Whitespace
-  (set (make-local-variable 'indent-tabs-mode) nil)
+  (set (make-local-variable 'indent-tabs-mode) t)
   (set (make-local-variable 'require-final-newline) t))
 
 
