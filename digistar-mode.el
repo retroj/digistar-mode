@@ -157,9 +157,6 @@ script file, if it exists."
 ;; Digistar-Time-Record mode
 ;;
 
-(defvar digistar-time-record-timer nil)
-(make-variable-buffer-local 'digistar-time-record-timer)
-
 (defvar digistar-time-record-last-time nil)
 (make-variable-buffer-local 'digistar-time-record-last-time)
 
@@ -167,7 +164,6 @@ script file, if it exists."
   (interactive)
   (cond
    ((null digistar-time-record-last-time)
-    ;; we must be on a line with a timestamp
     (let ((realtime (time-to-seconds))
           (scripttime (digistar-absolute-time-at-point)))
       (setq digistar-time-record-last-time
