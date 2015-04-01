@@ -164,13 +164,13 @@ script file, if it exists."
   (interactive)
   (cond
    ((null digistar-time-record-last-time)
-    (let ((realtime (time-to-seconds))
+    (let ((realtime (float-time))
           (scripttime (digistar-absolute-time-at-point)))
       (setq digistar-time-record-last-time
             (list realtime scripttime))
       (message "Recording times relative to %s. C-c C-c to end." scripttime)))
    (t
-    (let* ((realtime (time-to-seconds))
+    (let* ((realtime (float-time))
            (relreal (car digistar-time-record-last-time))
            (relscript (cadr digistar-time-record-last-time))
            (delta (- realtime relreal))
