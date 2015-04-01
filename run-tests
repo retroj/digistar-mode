@@ -1,2 +1,4 @@
 #!/bin/sh -e
-exec emacs -Q -batch -l digistar-mode.el -l tests/tests.el -f ert-run-tests-batch-and-exit
+exec emacs -Q -batch -l package -f package-initialize \
+     -l digistar-mode.el \
+     -l buttercup -f buttercup-run-discover tests
