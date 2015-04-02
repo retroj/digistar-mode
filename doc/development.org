@@ -72,22 +72,23 @@ to be the last thing you typed when you called indent.
   - State -> "DONE"  [2015-04-01 Wed]
   :END:
 * DONE use tabs - i give up
-  :LOGBOOK:  
+  :LOGBOOK:
   - State -> "TODO"  [2015-03-30 Mon]
   - State -> "DONE"  [2015-04-01 Wed]
-  :END:      
+  :END:
 * DONE time-record command
-  :LOGBOOK:  
+  :LOGBOOK:
   - State -> "TODO"  [2015-03-30 Mon]
   - State -> "DONE"  [2015-04-01 Wed]
-  :END:      
+  :END:
 
 Time-record would be a command to help figure out timings.  You put point
 on a line with a timestamp that you want to start at, and call this
 command.  Time-record then waits for you to press a given key, at which
 point it starts a clock synced to the moment that you pressed that first
 key.  For each subsequent press of that key, a new timestamp is created
-relative to the timestamp that you started on. 
+relative to the timestamp that you started on.
+
 * TODO highlighting: pathnames
   :LOGBOOK:  
   - State -> "TODO"  [2015-04-01 Wed]
@@ -97,3 +98,17 @@ pathnames begin with $ or . and contain at least one slash or backslash.
 
 maybe they can also start with a slash, in the case of a network path -
 have to check that out.
+
+* TODO electric indent causes errant point movement with non-timestamp digits
+  :LOGBOOK:
+  - State -> "TODO"  [2015-04-01 Wed]
+  :END:
+* DONE digistar-time-record-mode report time in hms format
+  :LOGBOOK:
+  - State -> "TODO"  [2015-04-01 Wed]
+  - State -> "DONE"  [2015-04-01 Wed]
+  :END:
+* TODO digistar-time-record-mode update indentation if starting on a line with only whitespace
+  :LOGBOOK:
+  - State -> "TODO"  [2015-04-01 Wed]
+  :END:
