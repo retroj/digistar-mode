@@ -99,9 +99,10 @@ pathnames begin with $ or . and contain at least one slash or backslash.
 maybe they can also start with a slash, in the case of a network path -
 have to check that out.
 
-* TODO electric indent causes errant point movement with non-timestamp digits
+* DONE electric indent causes errant point movement with non-timestamp digits
   :LOGBOOK:
   - State -> "TODO"  [2015-04-01 Wed]
+  - State -> "DONE"  [2015-04-02 Thu]
   :END:
 * DONE digistar-time-record-mode report time in hms format
   :LOGBOOK:

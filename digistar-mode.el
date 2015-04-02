@@ -262,6 +262,9 @@ timestamps to column 0 and commands with a tab."
      (timestamp-start
       (unless (= bol timestamp-start)
         (delete-region bol timestamp-start)))
+     ((and command-start (> (point) command-start))
+      (save-excursion
+        (indent-line-to tab-width)))
      (t
       (indent-line-to tab-width)))))
 
