@@ -175,7 +175,7 @@ script file, if it exists."
            (realtime (float-time))
            (delta (- realtime prev-realtime))
            (scripttime (+ prev-scripttime delta)))
-      (setq digistar-time-record-last-time (cdr realtime scripttime))
+      (setq digistar-time-record-last-time (cons realtime scripttime))
       (end-of-line)
       (open-line 1)
       (forward-line)
