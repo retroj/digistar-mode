@@ -1,6 +1,6 @@
 ;;; digistar-mode.el --- major mode for Digistar scripts
 
-;; Copyright (C) 2014-2015  John Foerch <jjfoerch@earthlink.net>
+;; Copyright (C) 2014-2016  John Foerch <jjfoerch@earthlink.net>
 
 ;; Author: John Foerch <jjfoerch@earthlink.net>
 ;; Version: 0.5
