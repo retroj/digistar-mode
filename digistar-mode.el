@@ -247,6 +247,7 @@ timestamp and S-SPC inserts a relative timestamp."
   "An indent-line-function for Digistar scripts.  Indents
 timestamps to column 0 and commands with a tab."
   (let (bol
+        toplevel-comment-start
         timestamp-start
         timestamp-end
         command-start)
@@ -254,11 +255,16 @@ timestamps to column 0 and commands with a tab."
       (beginning-of-line)
       (setq bol (point))
       (cond
+       ((looking-at "[[:blank:]]*\\(###\\|#+[[:blank:]]*[0-9+]\\|#[[:blank:]]*{\\[\\)")
+        (setq toplevel-comment-start (match-beginning 1)))
        ((looking-at "[[:blank:]]*\\([0-9:.+]+\\)?[[:blank:]]*\\(.+\\)?$")
         (setq timestamp-start (match-beginning 1)
               timestamp-end (match-end 1)
               command-start (match-beginning 2)))))
     (cond
+     (toplevel-comment-start
+      (unless (= bol toplevel-comment-start)
+        (delete-region bol toplevel-comment-start)))
      (timestamp-start
       (unless (= bol timestamp-start)
         (delete-region bol timestamp-start)))
