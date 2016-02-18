@@ -9,6 +9,7 @@
   :END:
 
 It would be easiest to implement this in python.
+
 * DONE when tabbing a comment, keep point relative to text
   :LOGBOOK:
   - State -> "TODO"  [2014-09-14 Sun]
@@ -90,9 +91,9 @@ key.  For each subsequent press of that key, a new timestamp is created
 relative to the timestamp that you started on.
 
 * TODO highlighting: pathnames
-  :LOGBOOK:  
+  :LOGBOOK:
   - State -> "TODO"  [2015-04-01 Wed]
-  :END:      
+  :END:
 
 pathnames begin with $ or . and contain at least one slash or backslash.
 
