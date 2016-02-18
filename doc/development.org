@@ -114,3 +114,15 @@ have to check that out.
   :LOGBOOK:
   - State -> "TODO"  [2015-04-01 Wed]
   :END:
+* TODO indent '###' comments to column 0
+  :LOGBOOK:
+  - State -> "TODO"  [2016-02-18 Thu]
+  :END:
+* TODO indent version cookies to column 0
+  :LOGBOOK:
+  - State -> "TODO"  [2016-02-18 Thu]
+  :END:
+* TODO indent '#+\s-*[+\d]' comment (commented timestamp) to column 0
+  :LOGBOOK:
+  - State -> "TODO"  [2016-02-18 Thu]
+  :END:
