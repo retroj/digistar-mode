@@ -217,6 +217,11 @@ timestamp and S-SPC inserts a relative timestamp."
 ;; Digistar mode
 ;;
 
+(defcustom digistar-tab-width 12
+  "Value for tab-width in Digistar-mode buffers"
+  :type 'integer
+  :group 'digistar)
+
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
@@ -291,6 +296,7 @@ timestamps to column 0 and commands with a tab."
        'digistar-indent-line-function)
   (set (make-local-variable 'electric-indent-chars)
        '(?\n ?+ ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?0))
+  (set (make-local-variable 'tab-width) digistar-tab-width)
 
   ;; Syntax Highlighting
   (setq font-lock-defaults (list digistar-font-lock-keywords nil t))
