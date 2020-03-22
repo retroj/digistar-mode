@@ -119,5 +119,9 @@
       (expect (digistar-test-tab-command "1   system skyon" 7)
               :to-equal '("1\tsystem skyon" 5)))
 
+  (it "timestamp, tab, command, cursor position 2"
+      (expect (digistar-test-tab-command "1\tsystem skyon" 2)
+              :to-equal '("1\tsystem skyon" 3)))
+
   )
 

@@ -273,14 +273,19 @@ timestamps to column 0 and commands with a tab."
       (unless (= bol toplevel-comment-start)
         (delete-region bol toplevel-comment-start)))
      (timestamp-start
-      (when (and command-start
-                 (not (string= "\t"
-                               (buffer-substring timestamp-end command-start))))
-        (delete-region timestamp-end command-start)
+      (when command-start
         (cond
-         ((or (< pt timestamp-end) (> pt command-start))
-          (save-excursion (goto-char timestamp-end) (insert "\t")))
-         (t (goto-char timestamp-end) (insert "\t"))))
+         ((string= "\t" (buffer-substring timestamp-end command-start))
+          (when (>= pt timestamp-end)
+            (forward-char)))
+         (t (delete-region timestamp-end command-start)
+            (cond
+             ((or (< pt timestamp-end) (> pt command-start))
+              (save-excursion
+                (goto-char timestamp-end)
+                (insert "\t")))
+             (t (goto-char timestamp-end)
+                (insert "\t"))))))
       (unless (= bol timestamp-start)
         (delete-region bol timestamp-start)))
      ((and command-start (> (point) command-start))
