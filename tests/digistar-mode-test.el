@@ -51,3 +51,73 @@
     (expect (digistar-format-decimal-number 0.00000001) :to-equal "0"))
   (it "4.211 -> \"4.211\""
     (expect (digistar-format-decimal-number 4.211) :to-equal "4.211")))
+
+
+(defun digistar-test-tab-command (line pt)
+  (let ((this-command 'blah)) ;; workaround because this isn't interactive
+    (with-temp-buffer
+      (insert line)
+      (goto-char pt)
+      (digistar-mode)
+      (digistar-indent-for-tab-command)
+      (list (buffer-string) (point)))))
+
+(describe "digistar-indent-for-tab-command"
+  (it "timestamp, no command, cursor point-min"
+      (expect (digistar-test-tab-command "1" 1)
+              :to-equal '("1" 1)))
+
+  (it "indented timestamp, no command, cursor point-min"
+      (expect (digistar-test-tab-command " 1" 1)
+              :to-equal '("1" 1)))
+
+  (it "timestamp tab command, cursor point-min"
+      (expect (digistar-test-tab-command "1\tsystem skyon" 1)
+              :to-equal '("1\tsystem skyon" 1)))
+
+  (it "indented timestamp tab command, cursor point-min"
+      (expect (digistar-test-tab-command " 1\tsystem skyon" 1)
+              :to-equal '("1\tsystem skyon" 1)))
+
+  (it "indented timestamp space command, cursor point-min"
+      (expect (digistar-test-tab-command " 1 system skyon" 1)
+              :to-equal '("1\tsystem skyon" 1)))
+
+  (it "no timestamp + command, cursor point-min"
+      (expect (digistar-test-tab-command "system skyon" 1)
+              :to-equal '("\tsystem skyon" 2)))
+
+  (it "timestamp, no command, cursor position 2"
+      (expect (digistar-test-tab-command "1" 2)
+              :to-equal '("1\t" 3)))
+
+  (it "timestamp, space, command, cursor position 2"
+      (expect (digistar-test-tab-command "1 system skyon" 2)
+              :to-equal '("1\tsystem skyon" 3)))
+
+  (it "timestamp, space, command, cursor position 3"
+      (expect (digistar-test-tab-command "1 system skyon" 3)
+              :to-equal '("1\tsystem skyon" 3)))
+
+  (it "timestamp, space, command, cursor position 4"
+      (expect (digistar-test-tab-command "1 system skyon" 4)
+              :to-equal '("1\tsystem skyon" 4)))
+
+  (it "timestamp, morespace, command, cursor position 3"
+      (expect (digistar-test-tab-command "1   system skyon" 3)
+              :to-equal '("1\tsystem skyon" 3)))
+
+  (it "timestamp, morespace, command, cursor position 4"
+      (expect (digistar-test-tab-command "1   system skyon" 4)
+              :to-equal '("1\tsystem skyon" 3)))
+
+  (it "timestamp, morespace, command, cursor position 5"
+      (expect (digistar-test-tab-command "1   system skyon" 5)
+              :to-equal '("1\tsystem skyon" 3)))
+
+  (it "timestamp, morespace, command, cursor position 7"
+      (expect (digistar-test-tab-command "1   system skyon" 7)
+              :to-equal '("1\tsystem skyon" 5)))
+
+  )
+

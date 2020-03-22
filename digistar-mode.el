@@ -224,6 +224,7 @@ timestamp and S-SPC inserts a relative timestamp."
 
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
     (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
@@ -255,7 +256,8 @@ timestamps to column 0 and commands with a tab."
         toplevel-comment-start
         timestamp-start
         timestamp-end
-        command-start)
+        command-start
+        (pt (point)))
     (save-excursion
       (beginning-of-line)
       (setq bol (point))
@@ -271,6 +273,14 @@ timestamps to column 0 and commands with a tab."
       (unless (= bol toplevel-comment-start)
         (delete-region bol toplevel-comment-start)))
      (timestamp-start
+      (when (and command-start
+                 (not (string= "\t"
+                               (buffer-substring timestamp-end command-start))))
+        (delete-region timestamp-end command-start)
+        (cond
+         ((or (< pt timestamp-end) (> pt command-start))
+          (save-excursion (goto-char timestamp-end) (insert "\t")))
+         (t (goto-char timestamp-end) (insert "\t"))))
       (unless (= bol timestamp-start)
         (delete-region bol timestamp-start)))
      ((and command-start (> (point) command-start))
@@ -278,6 +288,19 @@ timestamps to column 0 and commands with a tab."
         (indent-line-to tab-width)))
      (t
       (indent-line-to tab-width)))))
+
+(defun digistar-indent-for-tab-command (&optional arg)
+  (interactive "P")
+  (cond
+   ;; The region is active, indent it.
+   ((use-region-p)
+    (indent-region (region-beginning) (region-end)))
+   ((and (eolp)
+         (string-match "^[0-9:.+]+$"
+                       (buffer-substring (point-at-bol) (point))))
+    (insert-tab arg))
+   (t
+    (funcall indent-line-function))))
 
 (defalias 'digistar-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
