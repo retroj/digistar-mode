@@ -34,6 +34,17 @@
 ;;; Code:
 
 ;;
+;; Variables
+;;
+
+(defcustom digistar-gui-pathname
+  "C:/D6Software/Bin/GUI/Digistar.exe"
+  "Pathname of Digistar GUI executable."
+  :type '(file :must-match t :tag "Digistar GUI exe path")
+  :group 'digistar)
+
+
+;;
 ;; Utils
 ;;
 
@@ -152,6 +163,12 @@ script file, if it exists."
           (digistar-mode)))
       (pop-to-buffer buf))))
 
+(defun digistar-play-script ()
+  "Play this script in Digistar."
+  (interactive)
+  (call-process digistar-gui-pathname nil 0 nil
+                "-p" buffer-file-name))
+
 
 ;;
 ;; Digistar-Time-Record mode
@@ -226,6 +243,7 @@ timestamp and S-SPC inserts a relative timestamp."
   (let ((map (make-sparse-keymap)))
     (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
+    (define-key map (kbd "C-c C-p") 'digistar-play-script)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
     (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
     map)
