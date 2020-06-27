@@ -322,8 +322,6 @@ timestamps to column 0 and commands with a tab."
   (set (make-local-variable 'tab-always-indent) nil)
   (set (make-local-variable 'indent-line-function)
        'digistar-indent-line-function)
-  (set (make-local-variable 'electric-indent-chars)
-       '(?\n ?+ ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?0))
   (set (make-local-variable 'tab-width) digistar-tab-width)
 
   ;; Syntax Highlighting
