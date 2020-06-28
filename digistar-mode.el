@@ -310,6 +310,12 @@ timestamp and S-SPC inserts a relative timestamp."
   "A font-lock-keywords table for digistar-mode.  See
 `font-lock-defaults'.")
 
+(defun digistar-electric-indent-function (c)
+  (and (memq c '(?+ ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?. ?:))
+       (eolp)
+       (string-match "^\\s-*[0-9:.+]+$"
+                     (buffer-substring (point-at-bol) (point)))))
+
 (defun digistar-indent-line-function ()
   "An indent-line-function for Digistar scripts.  Indents
 timestamps to column 0 and commands with a tab."
@@ -384,6 +390,8 @@ timestamps to column 0 and commands with a tab."
   (set (make-local-variable 'indent-line-function)
        'digistar-indent-line-function)
   (set (make-local-variable 'tab-width) digistar-tab-width)
+  (add-hook 'electric-indent-functions
+            'digistar-electric-indent-function nil t)
 
   ;; Syntax Highlighting
   (setq font-lock-defaults (list digistar-font-lock-keywords nil t))
