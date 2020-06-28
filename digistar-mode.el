@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014-2020  John Foerch <jjfoerch@earthlink.net>
 
 ;; Author: John Foerch <jjfoerch@earthlink.net>
-;; Version: 0.7.0
+;; Version: 0.7.1
 ;; Date: 2020-06-27
 ;; Keywords: languages
 
