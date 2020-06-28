@@ -33,6 +33,9 @@
 
 ;;; Code:
 
+(require 'filenotify)
+
+
 ;;
 ;; Variables
 ;;
@@ -163,11 +166,51 @@ script file, if it exists."
           (digistar-mode)))
       (pop-to-buffer buf))))
 
+(defun digistar-filenotify-callback (event)
+  (let* ((descriptor (nth 0 event))
+         (action (nth 1 event))
+         (lisfile (nth 2 event))
+         (dsfile (concat (file-name-sans-extension lisfile) ".ds")))
+    ;;XXX assumption that only one changed event will occur
+    (when (eq 'changed action)
+      (file-notify-rm-watch descriptor)
+      (let ((lisbuffer (find-file-noselect lisfile)))
+        (display-buffer lisbuffer)))))
+
+(defun digistar-filenotify-callback-with-delete (event)
+  (let* ((descriptor (nth 0 event))
+         (action (nth 1 event))
+         (lisfile (nth 2 event))
+         (dsfile (concat (file-name-sans-extension lisfile) ".ds")))
+    ;;XXX assumption that only one changed event will occur
+    (when (eq 'changed action)
+      (file-notify-rm-watch descriptor)
+      (let ((lisbuffer (find-file-noselect lisfile)))
+        (display-buffer lisbuffer)
+        (delete-file dsfile)
+        (delete-file lisfile)))))
+
 (defun digistar-play-script ()
-  "Play this script in Digistar."
+  "Play this script in Digistar. If region is active, write its
+contents to a temporary file, and play that script in Digistar.
+The generated LIS file will be shown in a non-selected window,
+and if a temporary file was created, both the temporary file and
+its associated LIS file will be automatically deleted."
   (interactive)
-  (call-process digistar-gui-pathname nil 0 nil
-                "-p" buffer-file-name))
+  (let* ((using-temp-file (region-active-p))
+         (dsfile
+          (if using-temp-file
+              (let ((prefix (concat (file-name-base (buffer-file-name)) "-")))
+                (make-temp-file prefix nil ".ds"
+                                (buffer-substring (region-beginning) (region-end))))
+            buffer-file-name))
+         (lisfile (concat (file-name-sans-extension dsfile) ".lis")))
+    (file-notify-add-watch lisfile '(change)
+                           (if using-temp-file
+                               'digistar-filenotify-callback-with-delete
+                             'digistar-filenotify-callback))
+    (call-process digistar-gui-pathname nil nil nil
+                  "-p" dsfile)))
 
 
 ;;
