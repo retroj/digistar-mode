@@ -166,18 +166,7 @@ script file, if it exists."
           (digistar-mode)))
       (pop-to-buffer buf))))
 
-(defun digistar-filenotify-callback (event)
-  (let* ((descriptor (nth 0 event))
-         (action (nth 1 event))
-         (lisfile (nth 2 event))
-         (dsfile (concat (file-name-sans-extension lisfile) ".ds")))
-    ;;XXX assumption that only one changed event will occur
-    (when (eq 'changed action)
-      (file-notify-rm-watch descriptor)
-      (let ((lisbuffer (find-file-noselect lisfile)))
-        (display-buffer lisbuffer)))))
-
-(defun digistar-filenotify-callback-with-delete (event)
+(defun digistar-filenotify-callback (event &optional delete)
   (let* ((descriptor (nth 0 event))
          (action (nth 1 event))
          (lisfile (nth 2 event))
@@ -187,8 +176,12 @@ script file, if it exists."
       (file-notify-rm-watch descriptor)
       (let ((lisbuffer (find-file-noselect lisfile)))
         (display-buffer lisbuffer)
-        (delete-file dsfile)
-        (delete-file lisfile)))))
+        (when delete
+          (delete-file dsfile)
+          (delete-file lisfile))))))
+
+(defun digistar-filenotify-callback-with-delete (event)
+  (digistar-filenotify-callback event t))
 
 (defun digistar-play-script ()
   "Play this script in Digistar. If region is active, write its
