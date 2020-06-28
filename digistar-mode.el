@@ -298,6 +298,37 @@ timestamp and S-SPC inserts a relative timestamp."
     ("^[[:blank:]]*\\(\\+?[0-9:.]+\\)"
      (1 font-lock-preprocessor-face))
 
+    ;; commands
+    ("\\<[[:alpha:]][[:graph:]]*\\>" ;; (0 font-lock-builtin-face)
+
+     ;; lifecycle commands with no arguments
+     ;;XXX can we limit this to the first word after the anchor?
+     ("\\s-+\\<\\(delete\\|on\\|off\\)\\>"
+      (save-excursion (re-search-forward "[[:graph:]]\\s-\\|$") (point)) ;; limit
+      nil
+      (1 font-lock-keyword-face))
+
+     ;; declarations
+     ("\\s-+\\<\\(is\\)\\>\\s-*\\<\\([[:alpha:]][[:graph:]]*\\)\\>?" nil nil
+      (1 font-lock-keyword-face)
+      (2 font-lock-type-face))
+     ("\\s-+\\<\\(add\\)\\>\\s-*\\(\\<[[:alpha:]][[:graph:]]*\\>\\)?" nil nil
+      (1 font-lock-keyword-face)
+      (2 nil))
+
+     ("\\s-+\\<\\(turnto\\|moveto\\)\\>" nil nil (0 font-lock-keyword-face))
+
+     ;; filename
+     ("\\s-+[[:alpha:]][[:graph:]]*\\s-+\\(.*[/\\][^#;]*\\)" nil nil
+      (1 font-lock-string-face))
+
+     ("\\<\\(dur\\(?:ation\\)?\\)\\>\\s-*\\([.[:digit:]]*\\)\\s-*\\([.[:digit:]]*\\)\\s-*\\([.[:digit:]]*\\)" nil nil
+      (1 font-lock-keyword-face)
+      (2 font-lock-constant-face))
+
+     ;; rest of line for non-matching commands
+     (".*" nil nil (0 nil)))
+
     ;; errors in .lis files
     ("^!.*$" . font-lock-warning-face))
   "A font-lock-keywords table for digistar-mode.  See
