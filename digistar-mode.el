@@ -316,7 +316,7 @@ timestamp and S-SPC inserts a relative timestamp."
       (1 font-lock-keyword-face)
       (2 nil))
 
-     ("\\s-+\\<\\(turnto\\|moveto\\)\\>" nil nil (0 font-lock-keyword-face))
+     ("\\s-+\\<\\(turnto\\|moveto\\)\\>" nil nil (1 font-lock-keyword-face))
 
      ;; filename
      ("\\s-+[[:alpha:]][[:graph:]]*\\s-+\\(.*[/\\][^#;]*\\)" nil nil
