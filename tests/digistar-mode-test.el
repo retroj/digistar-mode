@@ -1,8 +1,13 @@
 
 (require 'buttercup)
+(require 'faceup)
 
 (require 'digistar-mode)
 
+
+;;
+;; Timestamps
+;;
 
 (describe "digistar-timestamp-to-seconds"
   (it "\"0\" -> 0"
@@ -52,6 +57,10 @@
   (it "4.211 -> \"4.211\""
     (expect (digistar-format-decimal-number 4.211) :to-equal "4.211")))
 
+
+;;
+;; Indentation
+;;
 
 (defun digistar-test-tab-command (line pt)
   (let ((this-command 'blah)) ;; workaround because this isn't interactive
@@ -125,3 +134,60 @@
 
   )
 
+
+;;
+;; Syntax highlighting (font-lock)
+;;
+
+ ;; faceup cheat sheet:
+ ;; (font-lock-builtin-face . "b")
+ ;; (font-lock-comment-delimiter-face . "m")
+ ;; (font-lock-comment-face . "x")
+ ;; (font-lock-constant-face . "c")
+ ;; (font-lock-doc-face . "d")
+ ;; (font-lock-function-name-face . "f")
+ ;; (font-lock-keyword-face . "k")
+ ;; (font-lock-negation-char-face . "n")
+ ;; (font-lock-preprocessor-face . "p")
+ ;; (font-lock-regexp-grouping-backslash . "h")
+ ;; (font-lock-regexp-grouping-construct . "o")
+ ;; (font-lock-string-face . "s")
+ ;; (font-lock-type-face . "t")
+ ;; (font-lock-variable-name-face . "v")
+ ;; (font-lock-warning-face . "w"))
+
+
+(defun digistar-font-lock-test (faceup)
+  (faceup-test-font-lock-string 'digistar-mode faceup))
+(faceup-defexplainer digistar-font-lock-test)
+
+(describe "Syntax highlighting"
+  (it "'«p:3»'                             "
+    (expect (digistar-font-lock-test "«p:3»")))
+  (it "'«p:+3»'                            "
+    (expect (digistar-font-lock-test "«p:+3»")))
+  (it "'«p:3»\\tfoo bar'                    "
+    (expect (digistar-font-lock-test "«p:3»\tfoo bar")))
+  (it "'foo «k:is» «t:cameraClass»'        "
+    (expect (digistar-font-lock-test "foo «k:is» «t:cameraClass»")))
+  (it "'foo «k:add» bar'                   "
+    (expect (digistar-font-lock-test "foo «k:add» bar")))
+  (it "'\\t«# comments»'                    "
+    (expect (digistar-font-lock-test "	«x:# comments»")))
+  (it "'\\tfoo bar baz «# comments»'        "
+    (expect (digistar-font-lock-test "	foo bar baz «x:# comments»")))
+  (it "'foo «k:delete»'                    "
+    (expect (digistar-font-lock-test "foo «k:delete»")))
+  (it "'foo «k:moveto» bar'                "
+    (expect (digistar-font-lock-test "foo «k:moveto» bar")))
+  (it "'foo «k:turnto» bar'                "
+    (expect (digistar-font-lock-test "foo «k:turnto» bar")))
+  (it "'foo bar baz «duration» «3»'        "
+    (expect (digistar-font-lock-test "foo bar baz «k:duration» «c:3»")))
+  (it "'foo bar baz «duration» «3» 2 1'    "
+    (expect (digistar-font-lock-test "foo bar baz «k:duration» «c:3» 2 1")))
+  (it "'foo bar baz «dur» «3»'             "
+    (expect (digistar-font-lock-test "foo bar baz «k:dur» «c:3»")))
+
+
+  )
