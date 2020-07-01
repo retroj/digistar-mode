@@ -293,44 +293,92 @@ timestamp and S-SPC inserts a relative timestamp."
     table)
   "The syntax table for font-lock in digistar-mode.")
 
+
+(defvar digistar-identifier-re
+  (rx-to-string '(: alpha (* graph))))
+
+(defvar digistar-command-re
+  (rx-to-string
+     `(: (* blank) (group (regexp ,digistar-identifier-re))
+         (* blank) (group (regexp ,digistar-identifier-re)))))
+
+(defun digistar-highlight-line (limit)
+  (let (class0b class0e
+        file0b file0e
+        dur0b dur0e dur1b dur1e)
+    (when (re-search-forward digistar-command-re limit t)
+      ;;XXX maybe instead of searching to eol, we should search up to the
+      ;;    first comment character on the line, or eol if there is no
+      ;;    comment.
+      (let ((eol (point-at-eol)))
+        (pcase-let ((`(,g0b ,g0e ,g1b ,g1e ,g2b ,g2e)
+                     (match-data)))
+          (let ((object (match-string 1))
+                (cmdorprop (match-string 2)))
+            (unless (member object
+                            '("capture" "dome" "eye" "js" "scene" "script"))
+              (setq g1b nil
+                    g1e nil))
+            (cond
+             ((string= "is" cmdorprop)
+              (when (looking-at (rx-to-string
+                                 `(: (+ blank)
+                                     (group (regexp ,digistar-identifier-re)))))
+                (goto-char (match-end 0))
+                (setq class0b (match-beginning 1)
+                      class0e (match-end 1))))
+             ;; not a special word
+             ((not (member cmdorprop
+                           `("add" "delete" "moveto" "turnto"
+                             "on" "off")))
+              (setq g2b nil
+                    g2e nil))))
+          ;; filenames
+          (when (or (re-search-forward (rx (group "$" (* (not (any "#" ";"))))) eol t)
+                    (re-search-forward (rx (* blank)
+                                           (group (* (not (any "#" ";")))
+                                                  (any "/" "\\")
+                                                  (* (not (any "#" ";")))))
+                                       eol t))
+            (setq file0b (match-beginning 1)
+                  file0e (match-end 1)))
+          ;; duration
+          (when (re-search-forward (rx bow (group "dur" (optional "ation"))
+                                       (* blank) (group (* num)))
+                                   eol t)
+            (setq dur0b (match-beginning 1)
+                  dur0e (match-end 1)
+                  dur1b (match-beginning 2)
+                  dur1e (match-end 2)))
+          (re-search-forward (rx (* (not (any "#" ";")))) eol t)
+          (set-match-data
+           (list g0b (point)
+                 g1b g1e
+                 g2b g2e
+                 class0b class0e
+                 file0b file0e
+                 dur0b dur0e
+                 dur1b dur1e))
+          t)))))
+
+
 (defvar digistar-font-lock-keywords
-  `(;; timestamps
+  `(;; errors in .lis files
+    ("^!.*$" . font-lock-warning-face)
+
+    ;; timestamps
     ("^[[:blank:]]*\\(\\+?[0-9:.]+\\)"
      (1 font-lock-preprocessor-face))
 
     ;; commands
-    ("\\<[[:alpha:]][[:graph:]]*\\>" ;; (0 font-lock-builtin-face)
-
-     ;; lifecycle commands with no arguments
-     ;;XXX can we limit this to the first word after the anchor?
-     ("\\s-+\\<\\(delete\\|on\\|off\\)\\>"
-      (save-excursion (re-search-forward "[[:graph:]]\\s-\\|$") (point)) ;; limit
-      nil
-      (1 font-lock-keyword-face))
-
-     ;; declarations
-     ("\\s-+\\<\\(is\\)\\>\\s-*\\<\\([[:alpha:]][[:graph:]]*\\)\\>?" nil nil
-      (1 font-lock-keyword-face)
-      (2 font-lock-type-face))
-     ("\\s-+\\<\\(add\\)\\>\\s-*\\(\\<[[:alpha:]][[:graph:]]*\\>\\)?" nil nil
-      (1 font-lock-keyword-face)
-      (2 nil))
-
-     ("\\s-+\\<\\(turnto\\|moveto\\)\\>" nil nil (1 font-lock-keyword-face))
-
-     ;; filename
-     ("\\s-+[[:alpha:]][[:graph:]]*\\s-+\\(.*[/\\][^#;]*\\)" nil nil
-      (1 font-lock-string-face))
-
-     ("\\<\\(dur\\(?:ation\\)?\\)\\>\\s-*\\([.[:digit:]]*\\)\\s-*\\([.[:digit:]]*\\)\\s-*\\([.[:digit:]]*\\)" nil nil
-      (1 font-lock-keyword-face)
-      (2 font-lock-constant-face))
-
-     ;; rest of line for non-matching commands
-     (".*" nil nil (0 nil)))
-
-    ;; errors in .lis files
-    ("^!.*$" . font-lock-warning-face))
+    (digistar-highlight-line
+     (1 font-lock-keyword-face nil t) ;; special objects
+     (2 font-lock-keyword-face nil t)
+     (3 font-lock-type-face nil t) ;; classname/prototype following 'is'
+     (4 font-lock-string-face nil t) ;; filename
+     (5 font-lock-keyword-face nil t) ;; duration
+     (6 font-lock-constant-face nil t)) ;; duration
+)
   "A font-lock-keywords table for digistar-mode.  See
 `font-lock-defaults'.")
 

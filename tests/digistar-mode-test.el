@@ -168,6 +168,8 @@
     (expect (digistar-font-lock-test "«p:+3»")))
   (it "'«p:3»\\tfoo bar'                    "
     (expect (digistar-font-lock-test "«p:3»\tfoo bar")))
+  (it "'foo «k:is»'                        "
+    (expect (digistar-font-lock-test "foo «k:is»")))
   (it "'foo «k:is» «t:cameraClass»'        "
     (expect (digistar-font-lock-test "foo «k:is» «t:cameraClass»")))
   (it "'foo «k:add» bar'                   "
@@ -178,6 +180,10 @@
     (expect (digistar-font-lock-test "	foo bar baz «x:# comments»")))
   (it "'foo «k:delete»'                    "
     (expect (digistar-font-lock-test "foo «k:delete»")))
+  (it "'foo «k:on»'                        "
+    (expect (digistar-font-lock-test "foo «k:on»")))
+  (it "'foo «k:off»'                       "
+    (expect (digistar-font-lock-test "foo «k:off»")))
   (it "'foo «k:moveto» bar'                "
     (expect (digistar-font-lock-test "foo «k:moveto» bar")))
   (it "'foo «k:turnto» bar'                "
@@ -188,6 +194,9 @@
     (expect (digistar-font-lock-test "foo bar baz «k:duration» «c:3» 2 1")))
   (it "'foo bar baz «dur» «3»'             "
     (expect (digistar-font-lock-test "foo bar baz «k:dur» «c:3»")))
-
+  (it "'foo model «s:$Content/Library/Models/Misc/image.x»'"
+      (expect (digistar-font-lock-test "foo model «s:$Content/Library/Models/Misc/image.x»")))
+  (it "'«k:script» play «s:effects/fakemoon/fakemoon-is fklj.ds»'"
+      (expect (digistar-font-lock-test "«k:script» play «s:effects/fakemoon/fakemoon-is fklj.ds»")))
 
   )
