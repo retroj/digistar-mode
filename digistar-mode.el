@@ -174,11 +174,14 @@ script file, if it exists."
     ;;XXX assumption that only one changed event will occur
     (when (eq 'changed action)
       (file-notify-rm-watch descriptor)
-      (let ((lisbuffer (find-file-noselect lisfile)))
-        (display-buffer lisbuffer)
-        (when delete
-          (delete-file dsfile)
-          (delete-file lisfile))))))
+      (display-buffer
+       (with-current-buffer (get-buffer-create " *Digistar Lis*")
+         (insert-file-contents lisfile nil nil nil t)
+         (digistar-mode)
+         (current-buffer)))
+      (when delete
+        (delete-file dsfile)
+        (delete-file lisfile)))))
 
 (defun digistar-filenotify-callback-with-delete (event)
   (digistar-filenotify-callback event t))
