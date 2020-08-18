@@ -189,19 +189,25 @@ script file, if it exists."
 (defun digistar-play-script ()
   "Play this script in Digistar. If region is active, write its
 contents to a temporary file, and play that script in Digistar.
-The generated LIS file will be shown in a non-selected window,
-and if a temporary file was created, both the temporary file and
-its associated LIS file will be automatically deleted.
+
+If the buffer is narrowed, play only that portion.
+
+The contents of the generated LIS file will be shown in the
+*Digistar Lis* buffer in a non-selected window, and if a temporary file
+was created, both the temporary file and its associated LIS file
+will be automatically deleted.
 
 When playing a region, relative paths will be resolved."
   (interactive)
-  (let* ((using-temp-file (region-active-p))
+  (let* ((using-temp-file (or (region-active-p) (buffer-narrowed-p)))
          (dsfile
           (if using-temp-file
               (let* ((prefix (concat (file-name-base (buffer-file-name)) "-"))
                      (file-directory (file-name-directory (buffer-file-name)))
                      (default-directory file-directory)
-                     (region-text (buffer-substring (region-beginning) (region-end))))
+                     (region-text (if (region-active-p)
+                                      (buffer-substring (region-beginning) (region-end))
+                                    (buffer-string))))
                 ;; resolve relative paths
                 (with-temp-buffer
                   (insert region-text)
