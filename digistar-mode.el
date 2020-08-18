@@ -191,14 +191,29 @@ script file, if it exists."
 contents to a temporary file, and play that script in Digistar.
 The generated LIS file will be shown in a non-selected window,
 and if a temporary file was created, both the temporary file and
-its associated LIS file will be automatically deleted."
+its associated LIS file will be automatically deleted.
+
+When playing a region, relative paths will be resolved."
   (interactive)
   (let* ((using-temp-file (region-active-p))
          (dsfile
           (if using-temp-file
-              (let ((prefix (concat (file-name-base (buffer-file-name)) "-")))
-                (make-temp-file prefix nil ".ds"
-                                (buffer-substring (region-beginning) (region-end))))
+              (let* ((prefix (concat (file-name-base (buffer-file-name)) "-"))
+                     (file-directory (file-name-directory (buffer-file-name)))
+                     (default-directory file-directory)
+                     (region-text (buffer-substring (region-beginning) (region-end))))
+                ;; resolve relative paths
+                (with-temp-buffer
+                  (insert region-text)
+                  (goto-char (point-min))
+                  (while (re-search-forward
+                          (concat "^[[:blank:]]*\\+?[0-9:.]*[[:blank:]]*"
+                                  digistar-identifier-re "[[:blank:]]+"
+                                  digistar-identifier-re "[[:blank:]]+"
+                                  "\\(\\.[^#;]*\\)"))
+                    (replace-match (file-truename (match-string 1)) t t nil 1)
+                    (end-of-line))
+                  (make-temp-file prefix nil ".ds" (buffer-string))))
             buffer-file-name))
          (lisfile (concat (file-name-sans-extension dsfile) ".lis")))
     (file-notify-add-watch lisfile '(change)
