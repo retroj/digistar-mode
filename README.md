@@ -15,7 +15,7 @@ Play this script in Digistar. If region is active, write its contents to a tempo
 
 The contents of the generated LIS file will be shown in the *Digistar Lis* buffer in a non-selected window, and if a temporary file was created, both the temporary file and its associated LIS file will be automatically deleted.
 
-When playing a region, relative paths will be resolved."
+When playing a region, relative paths will be resolved.
 
 ### C-c C-r digistar-time-record-mode
 
