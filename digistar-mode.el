@@ -347,7 +347,7 @@ timestamp and S-SPC inserts a relative timestamp."
                   file0e (match-end 1)))
           ;; duration
           (when (re-search-forward (rx bow (group "dur" (optional "ation"))
-                                       (* blank) (group (* num)))
+                                       (* blank) (group (* (any "." num))))
                                    eol t)
             (setq dur0b (match-beginning 1)
                   dur0e (match-end 1)
