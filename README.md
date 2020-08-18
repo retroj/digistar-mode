@@ -11,7 +11,11 @@ Show the .lis file that corresponds to the current Digistar script file, if it e
 
 ### C-c C-p digistar-play-script
 
-Play this script in Digistar. If region is active, write its contents to a temporary file, and play that script in Digistar. The generated LIS file will be shown in a non-selected window, and if a temporary file was created, both the temporary file and its associated LIS file will be automatically deleted.
+Play this script in Digistar. If region is active, write its contents to a temporary file, and play that script in Digistar. If the buffer is narrowed, play only that portion.
+
+The contents of the generated LIS file will be shown in the *Digistar Lis* buffer in a non-selected window, and if a temporary file was created, both the temporary file and its associated LIS file will be automatically deleted.
+
+When playing a region, relative paths will be resolved."
 
 ### C-c C-r digistar-time-record-mode
 
