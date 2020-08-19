@@ -47,6 +47,15 @@
   :group 'digistar)
 
 
+(defvar digistar-identifier-re
+  (rx-to-string '(: alpha (* graph))))
+
+(defvar digistar-command-re
+  (rx-to-string
+     `(: (* blank) (group (regexp ,digistar-identifier-re))
+         (* blank) (group (regexp ,digistar-identifier-re)))))
+
+
 ;;
 ;; Utils
 ;;
@@ -316,15 +325,6 @@ timestamp and S-SPC inserts a relative timestamp."
     (modify-syntax-entry ?\n ">" table)
     table)
   "The syntax table for font-lock in digistar-mode.")
-
-
-(defvar digistar-identifier-re
-  (rx-to-string '(: alpha (* graph))))
-
-(defvar digistar-command-re
-  (rx-to-string
-     `(: (* blank) (group (regexp ,digistar-identifier-re))
-         (* blank) (group (regexp ,digistar-identifier-re)))))
 
 (defun digistar-highlight-line (limit)
   (let (class0b class0e
