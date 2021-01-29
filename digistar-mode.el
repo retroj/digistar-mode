@@ -237,7 +237,7 @@ When playing a region, relative paths will be resolved."
                                'digistar-filenotify-callback-with-delete
                              'digistar-filenotify-callback))
     (call-process digistar-gui-pathname nil nil nil
-                  "-p" dsfile)))
+                  "-p" (replace-regexp-in-string "/" "\\\\" dsfile))))
 
 
 ;;
