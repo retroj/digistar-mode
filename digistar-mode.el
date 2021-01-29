@@ -1,10 +1,10 @@
 ;;; digistar-mode.el --- major mode for Digistar scripts
 
-;; Copyright (C) 2014-2020  John Foerch <jjfoerch@gmail.com>
+;; Copyright (C) 2014-2021  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
-;; Version: 0.9.1
-;; Date: 2020-08-26
+;; Version: 0.9.2
+;; Date: 2021-01-29
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or
