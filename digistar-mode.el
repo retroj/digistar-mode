@@ -46,6 +46,12 @@
   :type '(file :must-match t :tag "Digistar GUI exe path")
   :group 'digistar)
 
+(defcustom digistar-path-aliases
+  '(("$Content" . "c:/D6Content")
+    ("$Digistar" . "c:/D6Software"))
+  "Aliases for resolution of Digistar paths."
+  :type '(alist :key-type string :value-type string)
+  :group 'digistar)
 
 (defvar digistar-identifier-re
   (rx-to-string '(: alpha (* graph))))
@@ -130,6 +136,19 @@ in seconds."
                    (setq time (+ time (digistar-absolute-time-at-point-1))))
                  0.0)))
           (+ abstime time))))))
+
+(defun digistar-unresolve-path (path)
+  "Unresolve an OS path to a Digistar path, according to the
+aliaes in `digistar-path-aliases'."
+  (let* ((lcpath (downcase path))
+         (found
+          (seq-find (lambda (x)
+                      (string-prefix-p (concat (downcase (cdr x)) "/") lcpath))
+                    digistar-path-aliases)))
+    (cond
+     (found
+      (concat (car found) "/" (substring path (1+ (length (cdr found))))))
+     (t path))))
 
 
 ;;
@@ -239,6 +258,10 @@ When playing a region, relative paths will be resolved."
     (call-process digistar-gui-pathname nil nil nil
                   "-p" (replace-regexp-in-string "/" "\\\\" dsfile))))
 
+(defun digistar-insert-filepath (filepath)
+  (interactive "fFile: \n")
+  (insert (digistar-unresolve-path filepath)))
+
 
 ;;
 ;; Digistar-Time-Record mode
@@ -312,6 +335,7 @@ timestamp and S-SPC inserts a relative timestamp."
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
+    (define-key map (kbd "C-c C-f") 'digistar-insert-filepath)
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-p") 'digistar-play-script)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
