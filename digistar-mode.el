@@ -41,14 +41,25 @@
 ;;
 
 (defcustom digistar-gui-pathname
-  "C:/D6Software/Bin/GUI/Digistar.exe"
+  (seq-find 'file-exists-p
+            (list "C:/D7Software/Bin/GUI/Digistar.exe"
+                  "C:/D6Software/Bin/GUI/Digistar.exe"
+                  "C:/D5Software/Bin/GUI/Digistar.exe"))
   "Pathname of Digistar GUI executable."
   :type '(file :must-match t :tag "Digistar GUI exe path")
   :group 'digistar)
 
 (defcustom digistar-path-aliases
-  '(("$Content" . "c:/D6Content")
-    ("$Digistar" . "c:/D6Software"))
+  `(("$Content" . ,(seq-find 'file-exists-p
+                             (list "c:/D7Content"
+                                   "c:/D6Content"
+                                   "c:/D5Content")
+                             ""))
+    ("$Digistar" . ,(seq-find 'file-exists-p
+                              (list "c:/D7Software"
+                                    "c:/D6Software"
+                                    "c:/D5Software")
+                              "")))
   "Aliases for resolution of Digistar paths."
   :type '(alist :key-type string :value-type string)
   :group 'digistar)
