@@ -246,7 +246,9 @@ When playing a region, relative paths will be resolved."
                                   digistar-identifier-re "[[:blank:]]+"
                                   "\\(\\.[^#;]*\\)")
                           nil t)
-                    (replace-match (file-truename (match-string 1)) t t nil 1)
+                    (replace-match (digistar-unresolve-path
+                                    (file-truename (match-string 1)))
+                                   t t nil 1)
                     (end-of-line))
                   (make-temp-file prefix nil ".ds" (buffer-string))))
             buffer-file-name))
