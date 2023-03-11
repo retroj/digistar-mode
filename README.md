@@ -5,7 +5,7 @@ This is an Emacs major-mode for editing Digistar scripts.
 
 ## Commands
 
-### C-c C-f digistar-insert-filepath
+### C-c TAB digistar-insert-filepath
 
 Browse for a file and insert that filepath, after unresolving it to a Digistar path.
 

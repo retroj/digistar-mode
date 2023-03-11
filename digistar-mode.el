@@ -347,7 +347,7 @@ timestamp and S-SPC inserts a relative timestamp."
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
-    (define-key map (kbd "C-c C-f") 'digistar-insert-filepath)
+    (define-key map (kbd "C-c TAB") 'digistar-insert-filepath)
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-p") 'digistar-play-script)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
