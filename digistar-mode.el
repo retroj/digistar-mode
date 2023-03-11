@@ -156,10 +156,9 @@ aliaes in `digistar-path-aliases'."
           (seq-find (lambda (x)
                       (string-prefix-p (concat (downcase (cdr x)) "/") lcpath))
                     digistar-path-aliases)))
-    (cond
-     (found
-      (concat (car found) "/" (substring path (1+ (length (cdr found))))))
-     (t path))))
+    (if found
+        (concat (car found) "/" (substring path (1+ (length (cdr found)))))
+      path)))
 
 
 ;;
