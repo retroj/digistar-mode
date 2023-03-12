@@ -28,3 +28,9 @@ Digistar-Time-Record mode is a minor mode that records timestamps into a Digista
 ### C-c C-t digistar-show-absolute-time
 
 Show absolute time (in-script) of the current line.  If mark is active, the duration between point and mark will be reported instead.  With prefix argument, inserts the result.
+
+# Digistar-MRSLog-mode
+
+This is an Emacs major-mode for reading Digistar mrslog files.
+
+It currently provides only basic highlighting.
