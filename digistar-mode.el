@@ -597,8 +597,7 @@ timestamps to column 0 and commands with a tab."
        (group (1+ (any alpha))) space ?: space)))
 
 (defvar digistar-mrslog-font-lock-keywords
-  (let ((override t)
-        (laxmatch t))
+  (let ((override t))
     `((,digistar-mrslog-line-re
        (1 digistar-mrslog-timestamp-face)
        (3 digistar-mrslog-time-face ,override)
