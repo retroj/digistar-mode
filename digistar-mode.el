@@ -596,12 +596,6 @@ timestamps to column 0 and commands with a tab."
        (group (1+ (any alpha))) space ?: space
        (group (1+ (any alpha))) space ?: space)))
 
-(defvar digistar-mrslog-oid-source-re
-      (rx-to-string
-       `(: (group (1+ (any alpha))) space ?: space
-           (group (1+ (any alpha))) space ?: space
-           )))
-
 (defvar digistar-mrslog-font-lock-keywords
   (let ((override t)
         (laxmatch t))
