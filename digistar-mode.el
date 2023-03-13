@@ -597,7 +597,7 @@ timestamps to column 0 and commands with a tab."
   (rx-to-string
    `(: (group "OID") ?: space
        (group (1+ (any num))) space ?: space
-       (group (1+ (any alpha))) space ?: space
+       (group (1+ (any alnum))) space ?: space
        (group (1+ (any alpha))) space ?: space)))
 
 (defvar digistar-mrslog-cmdecho-re
