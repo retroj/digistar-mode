@@ -42,7 +42,8 @@
 
 (defcustom digistar-gui-pathname
   (seq-find 'file-exists-p
-            (list "C:/D7Software/Bin/GUI/Digistar.exe"
+            (list "C:/D7Software/Apps/Digistar/Bin/UI/Digistar.exe"
+                  "C:/D7Software/Bin/GUI/Digistar.exe"
                   "C:/D6Software/Bin/GUI/Digistar.exe"
                   "C:/D5Software/Bin/GUI/Digistar.exe"))
   "Pathname of Digistar GUI executable."
