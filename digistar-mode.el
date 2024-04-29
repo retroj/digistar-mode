@@ -660,7 +660,7 @@ timestamps to column 0 and commands with a tab."
          ((string= "Warning" category)
           (setq warning-b oid-common-e
                 warning-e whole-match-e))
-         ((string= "Error" category)
+         ((member category '("Error" "Fatal"))
           (setq error-b oid-common-e
                 error-e whole-match-e)))
 
