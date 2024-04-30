@@ -55,12 +55,12 @@
                              (list "c:/D7Content"
                                    "c:/D6Content"
                                    "c:/D5Content")
-                             ""))
+                             "c:/D7Content"))
     ("$Digistar" . ,(seq-find 'file-exists-p
                               (list "c:/D7Software"
                                     "c:/D6Software"
                                     "c:/D5Software")
-                              "")))
+                              "c:/D7Software")))
   "Aliases for resolution of Digistar paths."
   :type '(alist :key-type string :value-type string)
   :group 'digistar)
@@ -148,6 +148,18 @@ in seconds."
                    (setq time (+ time (digistar-absolute-time-at-point-1))))
                  0.0)))
           (+ abstime time))))))
+
+(defun digistar-resolve-path (path)
+  "Resolve a Digistar path to an OS path, according to the
+aliaes in `digistar-path-aliases'."
+  (let* ((lcpath (downcase path))
+         (found
+          (seq-find (lambda (x)
+                      (string-prefix-p (concat (downcase (car x)) "/") lcpath))
+                    digistar-path-aliases)))
+    (if found
+        (concat (cdr found) "/" (substring path (1+ (length (car found)))))
+      path)))
 
 (defun digistar-unresolve-path (path)
   "Unresolve an OS path to a Digistar path, according to the
@@ -274,6 +286,16 @@ When playing a region, relative paths will be resolved."
 (defun digistar-insert-filepath (filepath)
   (interactive "fFile: \n")
   (insert (digistar-unresolve-path filepath)))
+
+(defun digistar-find-file-at-point ()
+  (interactive)
+  (save-excursion
+    (cond
+     ((re-search-backward "\\$" (point-at-bol) t)
+      (looking-at "\\(\\$[^#$]*\\)\\(\\s-#.*\\)?$")
+      (message "matched: %s" (digistar-resolve-path (match-string 1))))
+     (t nil))))
+(define-key digistar-mode-map (kbd "C-c C-f") 'digistar-find-file-at-point)
 
 
 ;;
