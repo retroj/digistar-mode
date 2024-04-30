@@ -173,6 +173,11 @@ aliaes in `digistar-path-aliases'."
         (concat (car found) "/" (substring path (1+ (length (cdr found)))))
       path)))
 
+(defun digistar-absolute-path-at-point ()
+  (save-excursion
+    (re-search-backward "\\$" (point-at-bol) t)
+    (looking-at "\\(\\$[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")))
+
 
 ;;
 ;; Commands
@@ -289,13 +294,11 @@ When playing a region, relative paths will be resolved."
 
 (defun digistar-find-file-at-point ()
   (interactive)
-  (save-excursion
-    (cond
-     ((re-search-backward "\\$" (point-at-bol) t)
-      (looking-at "\\(\\$[^#$]*\\)\\(\\s-#.*\\)?$")
-      (message "matched: %s" (digistar-resolve-path (match-string 1))))
-     (t nil))))
-(define-key digistar-mode-map (kbd "C-c C-f") 'digistar-find-file-at-point)
+  (cond
+   ((digistar-absolute-path-at-point)
+    (let ((resolved-path (digistar-resolve-path (match-string 1))))
+      (find-file resolved-path)))
+   (t (message "No Digistar path was found at point"))))
 
 
 ;;
@@ -371,6 +374,7 @@ timestamp and S-SPC inserts a relative timestamp."
   (let ((map (make-sparse-keymap)))
     (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
     (define-key map (kbd "C-c TAB") 'digistar-insert-filepath)
+    (define-key map (kbd "C-c C-f") 'digistar-find-file-at-point)
     (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
     (define-key map (kbd "C-c C-p") 'digistar-play-script)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
