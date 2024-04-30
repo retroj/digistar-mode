@@ -173,10 +173,11 @@ aliaes in `digistar-path-aliases'."
         (concat (car found) "/" (substring path (1+ (length (cdr found)))))
       path)))
 
-(defun digistar-absolute-path-at-point ()
+(defun digistar-path-at-point ()
   (save-excursion
-    (re-search-backward "\\$" (point-at-bol) t)
-    (looking-at "\\(\\$[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")))
+    (re-search-backward "\\$\\|\\s-\\." (point-at-bol) t)
+    (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.[/\\\\]\\)[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")
+      (match-string 1))))
 
 
 ;;
@@ -294,11 +295,10 @@ When playing a region, relative paths will be resolved."
 
 (defun digistar-find-file-at-point ()
   (interactive)
-  (cond
-   ((digistar-absolute-path-at-point)
-    (let ((resolved-path (digistar-resolve-path (match-string 1))))
-      (find-file resolved-path)))
-   (t (message "No Digistar path was found at point"))))
+  (if-let ((path (digistar-path-at-point)))
+      (let ((resolved-path (digistar-resolve-path path)))
+        (find-file resolved-path))
+    (message "No Digistar path was found at point")))
 
 
 ;;
