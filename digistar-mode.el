@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014-2024  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
-;; Version: 0.9.10
+;; Version: 0.9.11
 ;; Date: 2024-04-30
 ;; Keywords: languages
 
