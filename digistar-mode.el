@@ -152,7 +152,7 @@ in seconds."
 (defun digistar-resolve-path (path)
   "Resolve a Digistar path to an OS path, according to the
 aliaes in `digistar-path-aliases'."
-  (let* ((lcpath (downcase path))
+  (let* ((lcpath (downcase (string-replace "\\" "/" path)))
          (found
           (seq-find (lambda (x)
                       (string-prefix-p (concat (downcase (car x)) "/") lcpath))
