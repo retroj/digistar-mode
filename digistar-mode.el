@@ -605,6 +605,7 @@ timestamps to column 0 and commands with a tab."
 
 (defvar digistar-mrslog-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-f") 'digistar-find-file-at-point)
     map)
   "The keymap for digistar-mrslog-mode.")
 
