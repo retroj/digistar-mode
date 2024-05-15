@@ -3,8 +3,8 @@
 ;; Copyright (C) 2014-2024  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
-;; Version: 0.9.12
-;; Date: 2024-05-14
+;; Version: 0.9.13
+;; Date: 2024-05-15
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or
