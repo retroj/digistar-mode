@@ -175,7 +175,7 @@ aliaes in `digistar-path-aliases'."
 
 (defun digistar-path-at-point ()
   (save-excursion
-    (re-search-backward "\\$\\|\\s-\\.\\|[a-zA-Z]:" (point-at-bol) t)
+    (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (point-at-bol) t)
     (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")
       (match-string 1))))
 
