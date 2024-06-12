@@ -586,10 +586,16 @@ timestamps to column 0 and commands with a tab."
 (defvar digistar-mrslog-time-face 'digistar-mrslog-time)
 
 (defface digistar-mrslog-mrs
-  '((t :foreground "gray50"))
+  '((t :foreground "violet"))
   ""
   :group 'digistar-faces)
 (defvar digistar-mrslog-mrs-face 'digistar-mrslog-mrs)
+
+(defface digistar-mrslog-oid
+  '((t :foreground "gray50"))
+  ""
+  :group 'digistar-faces)
+(defvar digistar-mrslog-oid-face 'digistar-mrslog-oid)
 
 (defface digistar-mrslog-cmdecho-time
   '((t :foreground "lightblue"))
@@ -720,11 +726,11 @@ timestamps to column 0 and commands with a tab."
        (digistar-mrslog-highlight-oid-line ;; anchored match
         (goto-char (match-end 1)) nil
         ; (0 font-lock-keyword-face) ;; whole line
-        (1 digistar-mrslog-mrs-face ,override) ;; OID
-        (2 digistar-mrslog-mrs-face ,override) ;; OID ID
-        (3 digistar-mrslog-mrs-face ,override) ;; OID Name
+        (1 digistar-mrslog-oid-face ,override) ;; OID
+        (2 digistar-mrslog-oid-face ,override) ;; OID ID
+        (3 digistar-mrslog-oid-face ,override) ;; OID Name
         (4 font-lock-keyword-face ,override) ;; Message Category
-        (5 digistar-mrslog-mrs-face ,override ,laxmatch) ;; status
+        (5 digistar-mrslog-oid-face ,override ,laxmatch) ;; status
         (6 'warning ,override ,laxmatch) ;; warning
         (7 'error ,override ,laxmatch) ;; error
         (8 font-lock-constant-face ,override ,laxmatch) ;; CmdEcho script name
