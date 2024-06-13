@@ -353,7 +353,8 @@ relative clock to `digistar-absolute-time-at-point`.  Subsequent
 presses of SPC or S-SPC insert new timestamps into the script
 based on that initialization time.  SPC inserts an absolute
 timestamp and S-SPC inserts a relative timestamp."
-  nil " Time-Record" digistar-time-record-mode-map
+  :lighter " Time-Record"
+  :keymap digistar-time-record-mode-map
   (cond
    (digistar-time-record-mode
     (message "digistar-time-record-mode: C-c C-c to finish"))
