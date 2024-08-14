@@ -418,8 +418,9 @@ timestamp and S-SPC inserts a relative timestamp."
                       class0e (match-end 1))))
              ;; not a special word
              ((not (member cmdorprop
-                           `("add" "delete" "moveto" "remove" "turnto"
-                             "on" "off")))
+                           `("add" "delete" "face" "goto" "init" "loop"
+                             "moveto" "pause" "play" "remove" "reset"
+                             "stop" "turnto" "on" "off")))
               (setq g2b nil
                     g2e nil))))
           ;; filenames
