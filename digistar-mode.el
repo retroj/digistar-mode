@@ -383,6 +383,23 @@ timestamp and S-SPC inserts a relative timestamp."
     map)
   "The keymap for digistar-mode.")
 
+(defvar digistar-mode-path (file-name-directory
+                            (or load-file-name
+                                (locate-library "digistar-mode"))))
+(defun digistar-mode-asset (relpath)
+  (concat digistar-mode-path "/" relpath))
+
+(defvar digistar-menu-bar-menu (make-sparse-keymap "Digistar"))
+(define-key digistar-mode-map [menu-bar digistar-menu] (cons "Digistar" digistar-menu-bar-menu))
+(define-key digistar-menu-bar-menu [digistar-play-script]
+  '(menu-item "Play Script" digistar-play-script :help "Play the script in Digistar"))
+
+(defvar digistar-tool-bar-map (make-sparse-keymap "Digistar"))
+(set-keymap-parent digistar-tool-bar-map tool-bar-map)
+
+(tool-bar-local-item-from-menu 'digistar-play-script (digistar-mode-asset "images/digistar-play")
+                               digistar-tool-bar-map digistar-mode-map)
+
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?# "<" table)  ;; comment syntax
@@ -564,7 +581,10 @@ timestamps to column 0 and commands with a tab."
 
   ;; Whitespace
   (set (make-local-variable 'indent-tabs-mode) t)
-  (set (make-local-variable 'require-final-newline) t))
+  (set (make-local-variable 'require-final-newline) t)
+
+  ;; Menu & Toolbar
+  (setq-local tool-bar-map digistar-tool-bar-map))
 
 
 ;;;###autoload
