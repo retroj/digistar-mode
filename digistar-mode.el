@@ -78,6 +78,14 @@
 ;; Utils
 ;;
 
+(defun digistar-mode-asset (relpath)
+  "Resolve relpath against the location of digistar-mode.el. Used
+for tool-bar button icons."
+  (let ((digistar-mode-path (file-name-directory
+                             (or load-file-name
+                                 (locate-library "digistar-mode")))))
+    (concat digistar-mode-path "/" relpath)))
+
 (defun digistar-format-decimal-number (n)
   (let ((str (replace-regexp-in-string "\\.?0*$" "" (format "%.11f" n))))
     (cond
@@ -373,6 +381,13 @@ timestamp and S-SPC inserts a relative timestamp."
   :type 'integer
   :group 'digistar)
 
+(defvar digistar-menu-bar-menu
+  (let ((map (make-sparse-keymap "Digistar")))
+    (define-key map [digistar-play-script]
+                '(menu-item "Play Script" digistar-play-script
+                            :help "Play the script in Digistar"))
+    map))
+
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
@@ -382,33 +397,26 @@ timestamp and S-SPC inserts a relative timestamp."
     (define-key map (kbd "C-c C-p") 'digistar-play-script)
     (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
     (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
+    (define-key map [menu-bar digistar-menu] (cons "Digistar" digistar-menu-bar-menu))
     map)
   "The keymap for digistar-mode.")
 
-(defvar digistar-mode-path (file-name-directory
-                            (or load-file-name
-                                (locate-library "digistar-mode"))))
-(defun digistar-mode-asset (relpath)
-  (concat digistar-mode-path "/" relpath))
-
-(defvar digistar-menu-bar-menu (make-sparse-keymap "Digistar"))
-(define-key digistar-mode-map [menu-bar digistar-menu] (cons "Digistar" digistar-menu-bar-menu))
-(define-key digistar-menu-bar-menu [digistar-play-script]
-  '(menu-item "Play Script" digistar-play-script :help "Play the script in Digistar"))
-
-;; (defvar digistar-tool-bar-map (make-sparse-keymap "Digistar"))
-;; (set-keymap-parent digistar-tool-bar-map tool-bar-map)
-;; (tool-bar-local-item-from-menu 'digistar-play-script
-;;                                (digistar-mode-asset "images/digistar-play")
-;;                                digistar-tool-bar-map digistar-mode-map)
-
-;;XXX The only way I have found so far to put our icons after the default
-;;    ones is to clone the default tool-bar-map.
-(defvar digistar-tool-bar-map (keymap-canonicalize tool-bar-map))
-(define-key-after digistar-tool-bar-map [separator-digistar] menu-bar-separator)
-(define-key-after digistar-tool-bar-map [digistar-play-script]
-  `(menu-item "Play Script" digistar-play-script :help "Play the script in Digistar"
-              :image ,(tool-bar--image-expression (digistar-mode-asset "images/digistar-play"))))
+(defun digistar-make-tool-bar-map ()
+  "Generate tool-bar-map when starting digistar-mode. The reason it
+must be generated on demand rather than defined when loading
+digistar-mode.el is that there is no way that I know of to just
+append buttons to the default tool-bar-map - instead we must
+clone tool-bar-map and append our button to that clone.  Since
+the user may have customized tool-bar-map at any point during
+runtime, we must make our clone as late as possible."
+  (let ((map (keymap-canonicalize tool-bar-map)))
+    (define-key-after map [separator-digistar] menu-bar-separator)
+    (define-key-after map [digistar-play-script]
+      `(menu-item "Play Script" digistar-play-script
+                  :help "Play the script in Digistar"
+                  :image ,(tool-bar--image-expression
+                           (digistar-mode-asset "images/digistar-play"))))
+    map))
 
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
@@ -594,7 +602,7 @@ timestamps to column 0 and commands with a tab."
   (set (make-local-variable 'require-final-newline) t)
 
   ;; Menu & Toolbar
-  (setq-local tool-bar-map digistar-tool-bar-map))
+  (setq-local tool-bar-map (digistar-make-tool-bar-map)))
 
 
 ;;;###autoload
