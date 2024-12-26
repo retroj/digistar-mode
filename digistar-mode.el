@@ -1,11 +1,13 @@
-;;; digistar-mode.el --- major mode for Digistar scripts
+;;; digistar-mode.el --- Major mode for Digistar scripts
 
 ;; Copyright (C) 2014-2024  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
 ;; Version: 0.9.14
 ;; Date: 2024-06-12
+;; URL: https://github.com/retroj/digistar-mode/
 ;; Keywords: languages
+;; Package-Requires: ((emacs "28.1"))
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -713,9 +715,7 @@ If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
        (? (or (group ?\$ (* anychar))
            (group ?\" (* anychar))
            (group "dur" (? "ation") space (1+ (any ?. num))
-                  (? space (1+ (any ?. num)) (? space (1+ (any ?. num))))
-                  )
-           ))
+                  (? space (1+ (any ?. num)) (? space (1+ (any ?. num)))))))
        eol)))
 
 (defun digistar-mrslog-highlight-oid-line (limit)
@@ -817,8 +817,7 @@ LIMIT is provided by font lock."
        ;; MRS entries
        (".*"                    ;; anchored match
         (goto-char (match-end 1)) nil
-        (0 digistar-mrslog-mrs-face))
-       )))
+        (0 digistar-mrslog-mrs-face)))))
 
   "A `font-lock-keywords' table for Digistar MRSLog Mode.  See `font-lock-defaults'.")
 
