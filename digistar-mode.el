@@ -188,7 +188,7 @@ throws `return' with the value in seconds."
   "Return Digistar path at point."
   (save-excursion
     (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (pos-bol) t)
-    (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")
+    (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\"\n]*\\)\\(\\s-*[|#\"].*\\)?$")
       (match-string 1))))
 
 
