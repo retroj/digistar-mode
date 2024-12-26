@@ -1,4 +1,4 @@
-;;; digistar-mode.el --- Major mode for Digistar scripts
+;;; digistar-mode.el --- Major mode for Digistar scripts -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2024  John Foerch <jjfoerch@gmail.com>
 
@@ -503,7 +503,7 @@ LIMIT is provided by font lock."
                   dur1e (match-end 2)))
           (re-search-forward (rx (* (not (any "#" ";")))) eol t)
           (set-match-data
-           (list g0b (point)
+           (list g0b g0e
                  g1b g1e
                  g2b g2e
                  class0b class0e
@@ -778,7 +778,7 @@ LIMIT is provided by font lock."
                oid-name-b oid-name-e
                category-b category-e
                status-b status-e
-               warning-b (point)
+               warning-b warning-e
                error-b error-e
                cmdecho-script-b cmdecho-script-e
                cmdecho-time-b cmdecho-time-e
