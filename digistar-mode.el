@@ -79,14 +79,15 @@
 ;;
 
 (defun digistar-mode-asset (relpath)
-  "Resolve relpath against the location of digistar-mode.el. Used
-for tool-bar button icons."
+  "Resolve RELPATH against the location of digistar-mode.el.
+Used for tool-bar button icons."
   (let ((digistar-mode-path (file-name-directory
                              (or load-file-name
                                  (locate-library "digistar-mode")))))
     (concat digistar-mode-path "/" relpath)))
 
 (defun digistar-format-decimal-number (n)
+  "Format number N for use in a Digistar timestamp."
   (let ((str (replace-regexp-in-string "\\.?0*$" "" (format "%.11f" n))))
     (cond
      ((string-match "^\\([0-9]\\)\\.\\([0-9]*?\\)\\(\\(?:0000+\\|9999+\\)[0-9]*\\)$" str)
@@ -101,6 +102,7 @@ for tool-bar button icons."
       (match-string 1 str)))))
 
 (defun digistar-seconds-to-timestamp (s)
+  "Format seconds S as a Digistar timestamp."
   (let* ((sd (digistar-format-decimal-number (- s (truncate s))))
          (sd (substring (if (string= sd "") "0" sd) 1))
          (h (floor s 3600))
@@ -116,6 +118,7 @@ for tool-bar button icons."
       (format "%d%s" s sd)))))
 
 (defun digistar-timestamp-to-seconds (ts)
+  "Convert timestamp TS to seconds."
   (if (string-match (concat "\\`\\(?:\\([[:digit:]]+\\):\\)??"
                             "\\(?:\\([[:digit:]]+\\):\\)?"
                             "\\([[:digit:]]+\\(?:\\.[[:digit:]]+\\)?\\)\\'")
@@ -127,12 +130,11 @@ for tool-bar button icons."
     (error "Not a valid timestamp")))
 
 (defun digistar-absolute-time-at-point-1 ()
-  "This procedure is for internal use by
-`digistar-absolute-time-at-point'.  It assumes that the caller
-has just used a regexp operation to find a timestamp.  If it is a
-relative timestamp, this procedure returns its value in seconds.
-If it is an absolute timestamp, it throws 'return with the value
-in seconds."
+  "This procedure is for internal use by `digistar-absolute-time-at-point'.
+It assumes that the caller has just used a regexp operation to
+find a timestamp.  If it is a relative timestamp, this procedure
+returns its value in seconds.  If it is an absolute timestamp, it
+throws 'return with the value in seconds."
   (let ((relativep (match-string 1))
         (s (digistar-timestamp-to-seconds (match-string 2))))
     (if relativep
@@ -142,6 +144,7 @@ in seconds."
 (defvar digistar-timestamp-regexp "^[[:blank:]]*\\(\\+\\)?\\([0-9:.]+\\)")
 
 (defun digistar-absolute-time-at-point (&optional pt)
+  "Displays the absolute time of the line at point or optional PT."
   (save-excursion
     (save-restriction
       (when pt
@@ -158,8 +161,7 @@ in seconds."
           (+ abstime time))))))
 
 (defun digistar-resolve-path (path)
-  "Resolve a Digistar path to an OS path, according to the
-aliaes in `digistar-path-aliases'."
+  "Resolve a Digistar PATH to an OS path, according to `digistar-path-aliases'."
   (let* ((lcpath (downcase (string-replace "\\" "/" path)))
          (found
           (seq-find (lambda (x)
@@ -170,8 +172,7 @@ aliaes in `digistar-path-aliases'."
       path)))
 
 (defun digistar-unresolve-path (path)
-  "Unresolve an OS path to a Digistar path, according to the
-aliaes in `digistar-path-aliases'."
+  "Unresolve an OS PATH to a Digistar path, according to `digistar-path-aliases'."
   (let* ((lcpath (downcase path))
          (found
           (seq-find (lambda (x)
@@ -182,6 +183,7 @@ aliaes in `digistar-path-aliases'."
       path)))
 
 (defun digistar-path-at-point ()
+  "Return Digistar path at point."
   (save-excursion
     (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (point-at-bol) t)
     (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")
@@ -193,9 +195,10 @@ aliaes in `digistar-path-aliases'."
 ;;
 
 (defun digistar-show-absolute-time (&optional insert)
-  "Show absolute time (in-script) of the current line.  If mark
-is active, the duration between point and mark will be reported
-instead.  With prefix argument, inserts the result."
+  "Show absolute time (in-script) of the current line.
+If mark is active, the duration between point and mark will be
+reported instead.  With prefix argument INSERT, inserts the
+result."
   (interactive "P")
   (let* ((s1 (digistar-absolute-time-at-point))
          (s2 (if mark-active
@@ -215,8 +218,7 @@ instead.  With prefix argument, inserts the result."
      (t (message "%s" s)))))
 
 (defun digistar-show-lis-file ()
-  "Show the .lis file that corresponds to the current Digistar
-script file, if it exists."
+  "Show the .lis file for the current Digistar script file, if it exists."
   (interactive)
   (let* ((f (or (buffer-file-name) (error "Not visiting a file")))
          (sans-ds-ext (if (string-equal "ds" (file-name-extension f))
@@ -232,6 +234,10 @@ script file, if it exists."
       (pop-to-buffer buf))))
 
 (defun digistar-filenotify-callback (event &optional delete)
+  "Callback to display the .lis file.
+
+EVENT is provided by filenotify.
+DELETE is a flag to delete the .lis file after displaying it."
   (let* ((descriptor (nth 0 event))
          (action (nth 1 event))
          (lisfile (nth 2 event))
@@ -249,11 +255,16 @@ script file, if it exists."
         (delete-file lisfile)))))
 
 (defun digistar-filenotify-callback-with-delete (event)
+  "Helper when showing the .lis file.
+
+EVENT is for filenotify."
   (digistar-filenotify-callback event t))
 
 (defun digistar-play-script ()
-  "Play this script in Digistar. If region is active, write its
-contents to a temporary file, and play that script in Digistar.
+  "Play this script in Digistar.
+
+If region is active, write its contents to a temporary file, and
+play that script in Digistar.
 
 If the buffer is narrowed, play only that portion.
 
@@ -265,7 +276,7 @@ will be automatically deleted.
 When playing a region, relative paths will be resolved."
   (interactive)
   (unless digistar-gui-pathname
-    (error "Digistar executable not found. See `digistar-gui-pathname'."))
+    (error "Digistar executable not found.  See `digistar-gui-pathname'"))
   (let* ((using-temp-file (or (region-active-p) (buffer-narrowed-p)))
          (dsfile
           (if using-temp-file
@@ -300,10 +311,12 @@ When playing a region, relative paths will be resolved."
                   "-p" (replace-regexp-in-string "/" "\\\\" dsfile))))
 
 (defun digistar-insert-filepath (filepath)
+  "Prompt for and insert a FILEPATH as a Digistar path."
   (interactive "fFile: \n")
   (insert (digistar-unresolve-path filepath)))
 
 (defun digistar-find-file-at-point ()
+  "Find-file-at-point with support for Digistar paths."
   (interactive)
   (if-let ((path (digistar-path-at-point)))
       (let ((resolved-path (digistar-resolve-path path)))
@@ -319,6 +332,9 @@ When playing a region, relative paths will be resolved."
 (make-variable-buffer-local 'digistar-time-record-last-time)
 
 (defun digistar-time-record-init-or-insert (&optional relative)
+  "Record a timestamp.
+
+It will be a relative timestamp if RELATIVE is t."
   (interactive)
   (cond
    ((null digistar-time-record-last-time)
@@ -342,10 +358,12 @@ When playing a region, relative paths will be resolved."
           (insert (digistar-seconds-to-timestamp scripttime)))))))
 
 (defun digistar-time-record-init-or-insert-relative ()
+  "Record a timestamp with relative mode on."
   (interactive)
   (digistar-time-record-init-or-insert t))
 
 (defun digistar-time-record-mode-done ()
+  "End `digistar-time-record-mode'."
   (interactive)
   (digistar-time-record-mode -1)
   (message "Digistar-Time-Record mode disabled"))
@@ -356,7 +374,9 @@ When playing a region, relative paths will be resolved."
 (define-key digistar-time-record-mode-map (kbd "C-c C-c") 'digistar-time-record-mode-done)
 
 (define-minor-mode digistar-time-record-mode
-  "Digistar-Time-Record mode is a minor mode that records
+  "A minor mode for quickly creating a set of timestamps in a script.
+
+Digistar-Time-Record mode is a minor mode that records
 timestamps into a Digistar script in realtime when you press SPC
 or S-SPC.  Once enabled, the first press of SPC initializes the
 relative clock to `digistar-absolute-time-at-point`.  Subsequent
@@ -377,7 +397,7 @@ timestamp and S-SPC inserts a relative timestamp."
 ;;
 
 (defcustom digistar-tab-width 12
-  "Value for tab-width in Digistar-mode buffers"
+  "Value for `tab-width' in Digistar-mode buffers."
   :type 'integer
   :group 'digistar)
 
@@ -399,16 +419,17 @@ timestamp and S-SPC inserts a relative timestamp."
     (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
     (define-key map [menu-bar digistar-menu] (cons "Digistar" digistar-menu-bar-menu))
     map)
-  "The keymap for digistar-mode.")
+  "The keymap for Digistar mode.")
 
 (defun digistar-make-tool-bar-map ()
-  "Generate tool-bar-map when starting digistar-mode. The reason it
-must be generated on demand rather than defined when loading
-digistar-mode.el is that there is no way that I know of to just
-append buttons to the default tool-bar-map - instead we must
-clone tool-bar-map and append our button to that clone.  Since
-the user may have customized tool-bar-map at any point during
-runtime, we must make our clone as late as possible."
+  "Generate `tool-bar-map' when starting Digistar mode.
+
+The reason it must be generated on demand rather than defined
+when loading digistar-mode.el is that there is no way that I know
+of to just append buttons to the default `tool-bar-map' - instead
+we must clone `tool-bar-map' and append our button to that clone.
+Since the user may have customized `tool-bar-map' at any point
+during runtime, we must make our clone as late as possible."
   (let ((map (keymap-canonicalize tool-bar-map)))
     (define-key-after map [separator-digistar] menu-bar-separator)
     (define-key-after map [digistar-play-script]
@@ -424,9 +445,12 @@ runtime, we must make our clone as late as possible."
     (modify-syntax-entry ?\; "<" table)
     (modify-syntax-entry ?\n ">" table)
     table)
-  "The syntax table for font-lock in digistar-mode.")
+  "The syntax table for font-lock in Digistar mode.")
 
 (defun digistar-highlight-line (limit)
+  "Font lock helper for Digistar syntax highlighting.
+
+LIMIT is provided by font lock."
   (let (class0b class0e
         file0b file0e
         dur0b dur0e dur1b dur1e)
@@ -504,18 +528,21 @@ runtime, we must make our clone as late as possible."
      (5 font-lock-keyword-face nil t) ;; duration
      (6 font-lock-constant-face nil t)) ;; duration
 )
-  "A font-lock-keywords table for digistar-mode.  See
-`font-lock-defaults'.")
+  "A `font-lock-keywords' table for Digistar mode.  See `font-lock-defaults'.")
 
 (defun digistar-electric-indent-function (c)
+  "Hook for `electric-indent-functions'.
+
+C is for `electric-indent-functions'."
   (and (memq c '(?+ ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?. ?:))
        (eolp)
        (string-match "^\\s-*[0-9:.+]+$"
                      (buffer-substring (point-at-bol) (point)))))
 
 (defun digistar-indent-line-function ()
-  "An indent-line-function for Digistar scripts.  Indents
-timestamps to column 0 and commands with a tab."
+  "An `indent-line-function' for Digistar scripts.
+
+Indents timestamps to column 0 and commands with a tab."
   (let (bol
         toplevel-comment-start
         timestamp-start
@@ -559,6 +586,9 @@ timestamps to column 0 and commands with a tab."
       (indent-line-to tab-width)))))
 
 (defun digistar-indent-for-tab-command (&optional arg)
+  "Indent according to Digistar conventions.
+
+If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
   (interactive "P")
   (cond
    ;; The region is active, indent it.
@@ -615,37 +645,37 @@ timestamps to column 0 and commands with a tab."
 
 (defface digistar-mrslog-timestamp
   '((t :background "gray10" :foreground "gray50"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-timestamp-face 'digistar-mrslog-timestamp)
 
 (defface digistar-mrslog-time
   '((t :inherit digistar-mrslog-timestamp :foreground "lightblue"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-time-face 'digistar-mrslog-time)
 
 (defface digistar-mrslog-mrs
   '((t :foreground "violet"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-mrs-face 'digistar-mrslog-mrs)
 
 (defface digistar-mrslog-oid
   '((t :foreground "gray50"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-oid-face 'digistar-mrslog-oid)
 
 (defface digistar-mrslog-cmdecho-time
   '((t :foreground "lightblue"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-cmdecho-time-face 'digistar-mrslog-cmdecho-time)
 
 (defface digistar-mrslog-cmdecho-pathname
   '((t :foreground "chartreuse3"))
-  ""
+  "Face used in Digistar MRSLog Mode."
   :group 'digistar-faces)
 (defvar digistar-mrslog-cmdecho-pathname-face 'digistar-mrslog-cmdecho-pathname)
 
@@ -653,7 +683,7 @@ timestamps to column 0 and commands with a tab."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-f") 'digistar-find-file-at-point)
     map)
-  "The keymap for digistar-mrslog-mode.")
+  "The keymap for Digistar MRSLog Mode.")
 
 (defvar digistar-mrslog-line-re
   (rx-to-string
@@ -689,6 +719,9 @@ timestamps to column 0 and commands with a tab."
        eol)))
 
 (defun digistar-mrslog-highlight-oid-line (limit)
+  "Font lock helper for Digistar MRSLog Mode.
+
+LIMIT is provided by font lock."
   (let ((whole-match-b (point))
         (whole-match-e limit))
     (when (re-search-forward digistar-mrslog-oid-re limit t)
@@ -787,8 +820,7 @@ timestamps to column 0 and commands with a tab."
         (0 digistar-mrslog-mrs-face))
        )))
 
-  "A font-lock-keywords table for digistar-mrslog-mode.  See
-  `font-lock-defaults'.")
+  "A `font-lock-keywords' table for Digistar MRSLog Mode.  See `font-lock-defaults'.")
 
 ;;;###autoload
 (define-derived-mode digistar-mrslog-mode fundamental-mode
