@@ -394,11 +394,19 @@ timestamp and S-SPC inserts a relative timestamp."
 (define-key digistar-menu-bar-menu [digistar-play-script]
   '(menu-item "Play Script" digistar-play-script :help "Play the script in Digistar"))
 
-(defvar digistar-tool-bar-map (make-sparse-keymap "Digistar"))
-(set-keymap-parent digistar-tool-bar-map tool-bar-map)
+;; (defvar digistar-tool-bar-map (make-sparse-keymap "Digistar"))
+;; (set-keymap-parent digistar-tool-bar-map tool-bar-map)
+;; (tool-bar-local-item-from-menu 'digistar-play-script
+;;                                (digistar-mode-asset "images/digistar-play")
+;;                                digistar-tool-bar-map digistar-mode-map)
 
-(tool-bar-local-item-from-menu 'digistar-play-script (digistar-mode-asset "images/digistar-play")
-                               digistar-tool-bar-map digistar-mode-map)
+;;XXX The only way I have found so far to put our icons after the default
+;;    ones is to clone the default tool-bar-map.
+(defvar digistar-tool-bar-map (keymap-canonicalize tool-bar-map))
+(define-key-after digistar-tool-bar-map [separator-digistar] menu-bar-separator)
+(define-key-after digistar-tool-bar-map [digistar-play-script]
+  `(menu-item "Play Script" digistar-play-script :help "Play the script in Digistar"
+              :image ,(tool-bar--image-expression (digistar-mode-asset "images/digistar-play"))))
 
 (defvar digistar-syntax-table
   (let ((table (make-syntax-table)))
