@@ -256,6 +256,8 @@ will be automatically deleted.
 
 When playing a region, relative paths will be resolved."
   (interactive)
+  (unless digistar-gui-pathname
+    (error "Digistar executable not found"))
   (let* ((using-temp-file (or (region-active-p) (buffer-narrowed-p)))
          (dsfile
           (if using-temp-file
