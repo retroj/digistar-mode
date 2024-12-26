@@ -7,7 +7,7 @@
 ;; Date: 2024-06-12
 ;; URL: https://github.com/retroj/digistar-mode/
 ;; Keywords: languages
-;; Package-Requires: ((emacs "28.1"))
+;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
