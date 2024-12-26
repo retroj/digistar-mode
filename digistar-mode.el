@@ -136,7 +136,7 @@ Used for tool-bar button icons."
 It assumes that the caller has just used a regexp operation to
 find a timestamp.  If it is a relative timestamp, this procedure
 returns its value in seconds.  If it is an absolute timestamp, it
-throws 'return with the value in seconds."
+throws `return' with the value in seconds."
   (let ((relativep (match-string 1))
         (s (digistar-timestamp-to-seconds (match-string 2))))
     (if relativep
@@ -187,7 +187,7 @@ throws 'return with the value in seconds."
 (defun digistar-path-at-point ()
   "Return Digistar path at point."
   (save-excursion
-    (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (point-at-bol) t)
+    (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (pos-bol) t)
     (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\n]*\\)\\(\\s-*[|#].*\\)?$")
       (match-string 1))))
 
@@ -460,7 +460,7 @@ LIMIT is provided by font lock."
       ;;XXX maybe instead of searching to eol, we should search up to the
       ;;    first comment character on the line, or eol if there is no
       ;;    comment.
-      (let ((eol (point-at-eol)))
+      (let ((eol (pos-eol)))
         (pcase-let ((`(,g0b ,g0e ,g1b ,g1e ,g2b ,g2e)
                      (match-data)))
           (let ((object (match-string 1))
@@ -539,7 +539,7 @@ C is for `electric-indent-functions'."
   (and (memq c '(?+ ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?. ?:))
        (eolp)
        (string-match "^\\s-*[0-9:.+]+$"
-                     (buffer-substring (point-at-bol) (point)))))
+                     (buffer-substring (pos-bol) (point)))))
 
 (defun digistar-indent-line-function ()
   "An `indent-line-function' for Digistar scripts.
@@ -598,7 +598,7 @@ If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
     (indent-region (region-beginning) (region-end)))
    ((and (eolp)
          (string-match "^[0-9:.+]+$"
-                       (buffer-substring (point-at-bol) (point))))
+                       (buffer-substring (pos-bol) (point))))
     (insert-tab arg))
    (t
     (funcall indent-line-function))))
@@ -819,7 +819,9 @@ LIMIT is provided by font lock."
         (goto-char (match-end 1)) nil
         (0 digistar-mrslog-mrs-face)))))
 
-  "A `font-lock-keywords' table for Digistar MRSLog Mode.  See `font-lock-defaults'.")
+  "A `font-lock-keywords' table for Digistar MRSLog Mode.
+
+See `font-lock-defaults'.")
 
 ;;;###autoload
 (define-derived-mode digistar-mrslog-mode fundamental-mode
