@@ -43,7 +43,7 @@
 ;;
 
 (defcustom digistar-gui-pathname
-  (seq-find 'file-exists-p
+  (seq-find #'file-exists-p
             (list "C:/D7Software/Apps/Digistar/Bin/UI/Digistar.exe"
                   "C:/D7Software/Bin/GUI/Digistar.exe"
                   "C:/D6Software/Bin/GUI/Digistar.exe"
@@ -53,12 +53,12 @@
   :group 'digistar)
 
 (defcustom digistar-path-aliases
-  `(("$Content" . ,(seq-find 'file-exists-p
+  `(("$Content" . ,(seq-find #'file-exists-p
                              (list "c:/D7Content"
                                    "c:/D6Content"
                                    "c:/D5Content")
                              "c:/D7Content"))
-    ("$Digistar" . ,(seq-find 'file-exists-p
+    ("$Digistar" . ,(seq-find #'file-exists-p
                               (list "c:/D7Software"
                                     "c:/D6Software"
                                     "c:/D5Software")
@@ -307,8 +307,8 @@ When playing a region, relative paths will be resolved."
          (lisfile (concat (file-name-sans-extension dsfile) ".lis")))
     (file-notify-add-watch lisfile '(change)
                            (if using-temp-file
-                               'digistar-filenotify-callback-with-delete
-                             'digistar-filenotify-callback))
+                               #'digistar-filenotify-callback-with-delete
+                             #'digistar-filenotify-callback))
     (call-process digistar-gui-pathname nil nil nil
                   "-p" (replace-regexp-in-string "/" "\\\\" dsfile))))
 
@@ -371,9 +371,9 @@ It will be a relative timestamp if RELATIVE is t."
   (message "Digistar-Time-Record mode disabled"))
 
 (defvar digistar-time-record-mode-map (make-sparse-keymap))
-(define-key digistar-time-record-mode-map (kbd "SPC") 'digistar-time-record-init-or-insert)
-(define-key digistar-time-record-mode-map (kbd "S-SPC") 'digistar-time-record-init-or-insert-relative)
-(define-key digistar-time-record-mode-map (kbd "C-c C-c") 'digistar-time-record-mode-done)
+(define-key digistar-time-record-mode-map (kbd "SPC") #'digistar-time-record-init-or-insert)
+(define-key digistar-time-record-mode-map (kbd "S-SPC") #'digistar-time-record-init-or-insert-relative)
+(define-key digistar-time-record-mode-map (kbd "C-c C-c") #'digistar-time-record-mode-done)
 
 (define-minor-mode digistar-time-record-mode
   "A minor mode for quickly creating a set of timestamps in a script.
@@ -412,13 +412,13 @@ timestamp and S-SPC inserts a relative timestamp."
 
 (defvar digistar-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map [remap indent-for-tab-command] 'digistar-indent-for-tab-command)
-    (define-key map (kbd "C-c TAB") 'digistar-insert-filepath)
-    (define-key map (kbd "C-c C-f") 'digistar-find-file-at-point)
-    (define-key map (kbd "C-c C-l") 'digistar-show-lis-file)
-    (define-key map (kbd "C-c C-p") 'digistar-play-script)
-    (define-key map (kbd "C-c C-t") 'digistar-show-absolute-time)
-    (define-key map (kbd "C-c C-r") 'digistar-time-record-mode)
+    (define-key map [remap indent-for-tab-command] #'digistar-indent-for-tab-command)
+    (define-key map (kbd "C-c TAB") #'digistar-insert-filepath)
+    (define-key map (kbd "C-c C-f") #'digistar-find-file-at-point)
+    (define-key map (kbd "C-c C-l") #'digistar-show-lis-file)
+    (define-key map (kbd "C-c C-p") #'digistar-play-script)
+    (define-key map (kbd "C-c C-t") #'digistar-show-absolute-time)
+    (define-key map (kbd "C-c C-r") #'digistar-time-record-mode)
     (define-key map [menu-bar digistar-menu] (cons "Digistar" digistar-menu-bar-menu))
     map)
   "The keymap for Digistar mode.")
@@ -617,10 +617,10 @@ If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
   ;; Indentation
   (set (make-local-variable 'tab-always-indent) nil)
   (set (make-local-variable 'indent-line-function)
-       'digistar-indent-line-function)
+       #'digistar-indent-line-function)
   (set (make-local-variable 'tab-width) digistar-tab-width)
   (add-hook 'electric-indent-functions
-            'digistar-electric-indent-function nil t)
+            #'digistar-electric-indent-function nil t)
 
   ;; Syntax Highlighting
   (setq font-lock-defaults (list digistar-font-lock-keywords nil t))
