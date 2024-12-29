@@ -370,10 +370,12 @@ It will be a relative timestamp if RELATIVE is t."
   (digistar-time-record-mode -1)
   (message "Digistar-Time-Record mode disabled"))
 
-(defvar digistar-time-record-mode-map (make-sparse-keymap))
-(define-key digistar-time-record-mode-map (kbd "SPC") #'digistar-time-record-init-or-insert)
-(define-key digistar-time-record-mode-map (kbd "S-SPC") #'digistar-time-record-init-or-insert-relative)
-(define-key digistar-time-record-mode-map (kbd "C-c C-c") #'digistar-time-record-mode-done)
+(defvar digistar-time-record-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "SPC") #'digistar-time-record-init-or-insert)
+    (define-key map (kbd "S-SPC") #'digistar-time-record-init-or-insert-relative)
+    (define-key map (kbd "C-c C-c") #'digistar-time-record-mode-done)
+    map))
 
 (define-minor-mode digistar-time-record-mode
   "A minor mode for quickly creating a set of timestamps in a script.
