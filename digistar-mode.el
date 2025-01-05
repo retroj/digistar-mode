@@ -7,7 +7,7 @@
 ;; Date: 2024-12-29
 ;; URL: https://github.com/retroj/digistar-mode/
 ;; Keywords: languages
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "25.1"))
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -164,7 +164,7 @@ throws `return' with the value in seconds."
 
 (defun digistar-resolve-path (path)
   "Resolve a Digistar PATH to an OS path, according to `digistar-path-aliases'."
-  (let* ((lcpath (downcase (string-replace "\\" "/" path)))
+  (let* ((lcpath (downcase (subst-char-in-string "\\" "/" path)))
          (found
           (seq-find (lambda (x)
                       (string-prefix-p (concat (downcase (car x)) "/") lcpath))
@@ -187,7 +187,7 @@ throws `return' with the value in seconds."
 (defun digistar-path-at-point ()
   "Return Digistar path at point."
   (save-excursion
-    (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (pos-bol) t)
+    (re-search-backward "\\$\\|\\s-\\.\\|\\b[a-zA-Z]:" (point-at-bol) t)
     (when (looking-at "\\s-?\\(\\(?:\\$\\|\\.\\.?[/\\\\]\\|[a-zA-Z]:\\)[^|#\"\n]*\\)\\(\\s-*[|#\"].*\\)?$")
       (match-string 1))))
 
@@ -462,7 +462,7 @@ LIMIT is provided by font lock."
       ;;XXX maybe instead of searching to eol, we should search up to the
       ;;    first comment character on the line, or eol if there is no
       ;;    comment.
-      (let ((eol (pos-eol)))
+      (let ((eol (point-at-eol)))
         (pcase-let ((`(,g0b ,g0e ,g1b ,g1e ,g2b ,g2e)
                      (match-data)))
           (let ((object (match-string 1))
@@ -541,7 +541,7 @@ C is for `electric-indent-functions'."
   (and (memq c '(?+ ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ?. ?:))
        (eolp)
        (string-match "^\\s-*[0-9:.+]+$"
-                     (buffer-substring (pos-bol) (point)))))
+                     (buffer-substring (point-at-bol) (point)))))
 
 (defun digistar-indent-line-function ()
   "An `indent-line-function' for Digistar scripts.
@@ -600,7 +600,7 @@ If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
     (indent-region (region-beginning) (region-end)))
    ((and (eolp)
          (string-match "^[0-9:.+]+$"
-                       (buffer-substring (pos-bol) (point))))
+                       (buffer-substring (point-at-bol) (point))))
     (insert-tab arg))
    (t
     (funcall indent-line-function))))
