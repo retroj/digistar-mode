@@ -1,10 +1,10 @@
 ;;; digistar-mode.el --- Major mode for Digistar scripts -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2024  John Foerch <jjfoerch@gmail.com>
+;; Copyright (C) 2014-2025  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
-;; Version: 0.9.15
-;; Date: 2024-12-29
+;; Version: 0.9.16
+;; Date: 2025-01-05
 ;; URL: https://github.com/retroj/digistar-mode/
 ;; Keywords: languages
 ;; Package-Requires: ((emacs "25.1"))
