@@ -164,7 +164,7 @@ throws `return' with the value in seconds."
 
 (defun digistar-resolve-path (path)
   "Resolve a Digistar PATH to an OS path, according to `digistar-path-aliases'."
-  (let* ((lcpath (downcase (subst-char-in-string "\\" "/" path)))
+  (let* ((lcpath (downcase (subst-char-in-string ?\\ ?/ path)))
          (found
           (seq-find (lambda (x)
                       (string-prefix-p (concat (downcase (car x)) "/") lcpath))
