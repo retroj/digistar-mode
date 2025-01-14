@@ -634,6 +634,7 @@ If at the end of a line with only a timestamp, ARG is passed to `insert-tab'."
   ;; Whitespace
   (set (make-local-variable 'indent-tabs-mode) t)
   (set (make-local-variable 'require-final-newline) t)
+  (set (make-local-variable 'align-to-tab-stop) nil)
 
   ;; Menu & Toolbar
   (setq-local tool-bar-map (digistar-make-tool-bar-map)))
