@@ -44,7 +44,8 @@
 
 (defcustom digistar-gui-pathname
   (seq-find #'file-exists-p
-            (list "C:/D7Software/Apps/Digistar/Bin/UI/Digistar.exe"
+            (list "C:/CXSoftware/Apps/Digistar/Bin/UI/Digistar.exe"
+                  "C:/D7Software/Apps/Digistar/Bin/UI/Digistar.exe"
                   "C:/D7Software/Bin/GUI/Digistar.exe"
                   "C:/D6Software/Bin/GUI/Digistar.exe"
                   "C:/D5Software/Bin/GUI/Digistar.exe"))
@@ -54,12 +55,14 @@
 
 (defcustom digistar-path-aliases
   `(("$Content" . ,(seq-find #'file-exists-p
-                             (list "c:/D7Content"
+                             (list "c:/CXContent"
+                                   "c:/D7Content"
                                    "c:/D6Content"
                                    "c:/D5Content")
                              "c:/D7Content"))
     ("$Digistar" . ,(seq-find #'file-exists-p
-                              (list "c:/D7Software"
+                              (list "c:/CXSoftware"
+                                    "c:/D7Software"
                                     "c:/D6Software"
                                     "c:/D5Software")
                               "c:/D7Software")))
