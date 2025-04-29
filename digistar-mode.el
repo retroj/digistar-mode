@@ -54,24 +54,20 @@
   :group 'digistar)
 
 (defcustom digistar-path-aliases
-  `(("$Content" . ,(seq-find #'file-exists-p
-                             (list "c:/CXContent"
-                                   "c:/D7Content"
-                                   "c:/D6Content"
-                                   "c:/D5Content")
-                             "c:/D7Content"))
-    ("$Digistar" . ,(seq-find #'file-exists-p
-                              (list "c:/CXSoftware"
-                                    "c:/D7Software"
-                                    "c:/D6Software"
-                                    "c:/D5Software")
-                              "c:/D7Software"))
-    ("$Software" . ,(seq-find #'file-exists-p
-                              (list "c:/CXSoftware"
-                                    "c:/D7Software"
-                                    "c:/D6Software"
-                                    "c:/D5Software")
-                              "c:/D7Software")))
+  (let ((digistar-software-path (seq-find #'file-exists-p
+                                          (list "c:/CXSoftware"
+                                                "c:/D7Software"
+                                                "c:/D6Software"
+                                                "c:/D5Software")
+                                          "c:/D7Software")))
+    `(("$Content" . ,(seq-find #'file-exists-p
+                               (list "c:/CXContent"
+                                     "c:/D7Content"
+                                     "c:/D6Content"
+                                     "c:/D5Content")
+                               "c:/D7Content"))
+      ("$Digistar" . ,digistar-software-path)
+      ("$Software" . ,digistar-software-path)))
   "Aliases for resolution of Digistar paths."
   :type '(alist :key-type string :value-type string)
   :group 'digistar)
