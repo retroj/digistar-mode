@@ -65,6 +65,12 @@
                                     "c:/D7Software"
                                     "c:/D6Software"
                                     "c:/D5Software")
+                              "c:/D7Software"))
+    ("$Software" . ,(seq-find #'file-exists-p
+                              (list "c:/CXSoftware"
+                                    "c:/D7Software"
+                                    "c:/D6Software"
+                                    "c:/D5Software")
                               "c:/D7Software")))
   "Aliases for resolution of Digistar paths."
   :type '(alist :key-type string :value-type string)
