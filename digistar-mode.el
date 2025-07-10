@@ -3,8 +3,8 @@
 ;; Copyright (C) 2014-2025  John Foerch <jjfoerch@gmail.com>
 
 ;; Author: John Foerch <jjfoerch@gmail.com>
-;; Version: 0.9.17
-;; Date: 2025-01-06
+;; Version: 0.9.18
+;; Date: 2025-07-10
 ;; URL: https://github.com/retroj/digistar-mode/
 ;; Keywords: languages
 ;; Package-Requires: ((emacs "25.1"))
